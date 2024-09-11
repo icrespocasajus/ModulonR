@@ -33,14 +33,14 @@ usethis::use_testthat()
 # this will generate documentation for your functions
 library(pacman)
 pacman::p_load(sinew)
-sinew::makeOxyFile("R/PruNetR_functions_wo_comments.R")# This is going to create PruNetR_functions.R, which has to be renamed to PruNetR_functions.R
+sinew::makeOxyFile("R/ModulonR_functions_wo_comments.R")# This is going to create ModulonR_functions.R, which has to be renamed to ModulonR_functions.R
 
 
 # Get out and in of the project
 # Click install within the Build tab
 
 # See available functions
-pacman::p_functions("PruNetR")
+pacman::p_functions("ModulonR")
 
 
 #devtools::check()# WARNING! Be aware that using check from RStudio build panel is going to wipe out the doc folder; vignettes may stop working properly
@@ -53,7 +53,7 @@ file.copy(dir("vignettes", full.names=TRUE), "inst/doc", overwrite=TRUE)
 
 # Commit and re-build
 
-browseVignettes('PruNetR')
+browseVignettes('ModulonR')
 vignette('README')
 
 
