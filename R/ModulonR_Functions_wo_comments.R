@@ -352,7 +352,7 @@ RunOPLSDA = function(
     for(population in classes){
       idents.tmp = ifelse(idents.backup == population,"ident.1","ident.2")
       
-      opls.res = FindMarkersOPLS.ext.wo.seurat(data = data,
+      opls.res = FindMarkersOPLS.plus(data = data,
                                                features = features,
                                                annotation = idents.tmp,
                                                ident.1 = "ident.1", 
@@ -430,7 +430,7 @@ RunOPLSDA = function(
       ident.df[ident.df$ident == population.1,]$new.ident = "ident.1"
       ident.df[ident.df$ident == population.2,]$new.ident = "ident.2"
       
-      opls.res = FindMarkersOPLS.ext.wo.seurat(data = data,
+      opls.res = FindMarkersOPLS.plus(data = data,
                                                features = features,
                                                annotation = ident.df$new.ident,
                                                ident.1 = "ident.1", 
@@ -608,7 +608,7 @@ RunOPLSDA_Seurat = function(seurat.object = NULL,
       seurat.object@meta.data$new.ident = ident.df[rownames(seurat.object@meta.data),]$new.ident
       Seurat::Idents(seurat.object) = seurat.object$new.ident
       
-      opls.res = FindMarkersOPLS.ext(seurat.object = seurat.object,
+      opls.res = FindMarkersOPLS.plus.seurat(seurat.object = seurat.object,
                                      assay = assay,
                                      features = features,
                                      slot = slot,
@@ -694,7 +694,7 @@ RunOPLSDA_Seurat = function(seurat.object = NULL,
       seurat.object@meta.data$new.ident = ident.df[rownames(seurat.object@meta.data),]$new.ident
       Seurat::Idents(seurat.object) = seurat.object$new.ident
       
-      opls.res = FindMarkersOPLS.ext(seurat.object = seurat.object,
+      opls.res = FindMarkersOPLS.plus.seurat(seurat.object = seurat.object,
                                      assay = assay,
                                      features = features,
                                      slot = slot,
@@ -842,7 +842,7 @@ RunOPLSDA_Seurat = function(seurat.object = NULL,
 }
 
 
-FindMarkersOPLS.ext = function(seurat.object, 
+FindMarkersOPLS.plus.seurat = function(seurat.object, 
                                ident.1, 
                                ident.2 = NULL,
                                features = NULL,
@@ -897,7 +897,7 @@ FindMarkersOPLS.ext = function(seurat.object,
   return(opls.res)
 }
 
-FindMarkersOPLS.ext.wo.seurat = function(data,
+FindMarkersOPLS.plus = function(data,
                                          annotation,       
                                          ident.1, 
                                          ident.2 = NULL,
