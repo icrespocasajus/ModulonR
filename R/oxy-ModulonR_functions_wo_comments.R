@@ -9,6 +9,23 @@ suppressMessages(require(ropls))
 suppressMessages(require(operators))
 
 # Function to get hierarchical clusters
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param mat PARAM_DESCRIPTION
+#' @param distance.method PARAM_DESCRIPTION, Default: DISTANCE_METHODS
+#' @param clustering.method PARAM_DESCRIPTION, Default: CLUSTERING_METHODS
+#' @param scale PARAM_DESCRIPTION, Default: TRUE
+#' @param ... PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname GetHierarchicalClusters
+#' @export 
 GetHierarchicalClusters <- function(mat, 
                                     distance.method = DISTANCE_METHODS, 
                                     clustering.method = CLUSTERING_METHODS,
@@ -36,6 +53,24 @@ GetHierarchicalClusters <- function(mat,
 }
 
 # Function to find feature clusters
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param mat PARAM_DESCRIPTION
+#' @param annotation PARAM_DESCRIPTION, Default: NULL
+#' @param cluster.nums PARAM_DESCRIPTION, Default: 2:10
+#' @param distance.method PARAM_DESCRIPTION, Default: DISTANCE_METHODS
+#' @param clustering.method PARAM_DESCRIPTION, Default: CLUSTERING_METHODS
+#' @param ... PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname FindFeatureCluster
+#' @export 
 FindFeatureCluster <- function(mat, 
                                annotation = NULL, 
                                cluster.nums = 2:10, 
@@ -77,6 +112,25 @@ FindFeatureCluster <- function(mat,
 }
 
 # Function to calculate signature AUC
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param signature.list PARAM_DESCRIPTION
+#' @param mat PARAM_DESCRIPTION
+#' @param rankings PARAM_DESCRIPTION, Default: NULL
+#' @param scale PARAM_DESCRIPTION, Default: FALSE
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @seealso 
+#'  \code{\link[AUCell]{AUCell_buildRankings}}, \code{\link[AUCell]{AUCell_calcAUC}}, \code{\link[AUCell]{aucellResults-class}}
+#' @rdname GetSignatureAUC
+#' @export 
+#' @importFrom AUCell AUCell_buildRankings AUCell_calcAUC getAUC
 GetSignatureAUC <- function(signature.list, mat, rankings = NULL, scale = FALSE) {
   # Compute rankings if not provided
   if (is.null(rankings)) {
@@ -109,6 +163,23 @@ GetSignatureAUC <- function(signature.list, mat, rankings = NULL, scale = FALSE)
   return(signature.score)
 }
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param mat PARAM_DESCRIPTION
+#' @param method PARAM_DESCRIPTION, Default: 'OPLS'
+#' @param annotation PARAM_DESCRIPTION
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname DiscriminantAnalysis
+#' @export 
 DiscriminantAnalysis <- function(mat, method = "OPLS", annotation, BackgroundClasses=NULL, QueryClasses=NULL) {
   if (is.null(BackgroundClasses)){
     BackgroundClasses = unique(annotation)
@@ -164,6 +235,28 @@ DiscriminantAnalysis <- function(mat, method = "OPLS", annotation, BackgroundCla
   return(compare.res.df)
 }
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param mat PARAM_DESCRIPTION
+#' @param annotation PARAM_DESCRIPTION
+#' @param ident.1 PARAM_DESCRIPTION
+#' @param ident.2 PARAM_DESCRIPTION, Default: NULL
+#' @param scale_weights PARAM_DESCRIPTION, Default: TRUE
+#' @param scale_vipVn PARAM_DESCRIPTION, Default: TRUE
+#' @param ... PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @seealso 
+#'  \code{\link[ropls]{opls}}
+#' @rdname PerformOPLS
+#' @export 
+#' @importFrom ropls opls
 PerformOPLS <- function(mat, annotation, ident.1, ident.2 = NULL, scale_weights = TRUE, scale_vipVn = TRUE, ...) {
   mat <- t(mat)
   
@@ -254,6 +347,19 @@ PerformOPLS <- function(mat, annotation, ident.1, ident.2 = NULL, scale_weights 
   return(opls.res.df)
 }
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param x PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname scale_range
+#' @export 
 scale_range <- function(x) {
   range_ <- range(x, na.rm = TRUE)
   if ((range_[2] - range_[1]) == 0) {
@@ -265,6 +371,19 @@ scale_range <- function(x) {
 }
 
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param clusters.DA PARAM_DESCRIPTION, Default: NULL
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname CalculateGDS
+#' @export 
 CalculateGDS <- function(clusters.DA = NULL){
   print('Calculating the GDS...')
   if(is.null(clusters.DA)){print('Wrong input');exit}
@@ -311,8 +430,36 @@ CalculateGDS <- function(clusters.DA = NULL){
 }
 
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param x PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname range01
+#' @export 
 range01 = function(x){(x-min(x, na.rm=T))/(max(x,na.rm=T)-min(x, na.rm=T))}
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param x PARAM_DESCRIPTION
+#' @param split PARAM_DESCRIPTION
+#' @param ... PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname strsplit2
+#' @export 
 strsplit2 = function (x, split, ...) {
   x <- as.character(x)
   n <- length(x)
@@ -326,6 +473,25 @@ strsplit2 = function (x, split, ...) {
   out
 }
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param data PARAM_DESCRIPTION, Default: NULL
+#' @param annotation PARAM_DESCRIPTION, Default: NULL
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
+#' @param features PARAM_DESCRIPTION, Default: NULL
+#' @param reduction.name PARAM_DESCRIPTION, Default: NULL
+#' @param pairwise PARAM_DESCRIPTION, Default: NULL
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname DiscriminantAnalysis_Plus
+#' @export 
 DiscriminantAnalysis_Plus = function(
     data = NULL, 
     annotation = NULL,
@@ -572,6 +738,30 @@ DiscriminantAnalysis_Plus = function(
   return(results.list)
 }
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param seurat.object PARAM_DESCRIPTION, Default: NULL
+#' @param assay PARAM_DESCRIPTION, Default: NULL
+#' @param slot PARAM_DESCRIPTION, Default: 'data'
+#' @param annotation PARAM_DESCRIPTION, Default: NULL
+#' @param features PARAM_DESCRIPTION, Default: NULL
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
+#' @param reduction.name PARAM_DESCRIPTION, Default: NULL
+#' @param pairwise PARAM_DESCRIPTION, Default: NULL
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @seealso 
+#'  \code{\link[Seurat]{reexports}}
+#' @rdname DiscriminantAnalysis_Plus_Seurat
+#' @export 
+#' @importFrom Seurat Idents CreateDimReducObject
 DiscriminantAnalysis_Plus_Seurat = function(seurat.object = NULL, 
                             assay = NULL, 
                             slot = "data",
@@ -872,6 +1062,30 @@ DiscriminantAnalysis_Plus_Seurat = function(seurat.object = NULL,
 }
 
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param seurat.object PARAM_DESCRIPTION
+#' @param ident.1 PARAM_DESCRIPTION
+#' @param ident.2 PARAM_DESCRIPTION, Default: NULL
+#' @param features PARAM_DESCRIPTION, Default: NULL
+#' @param assay PARAM_DESCRIPTION, Default: NULL
+#' @param slot PARAM_DESCRIPTION, Default: 'data'
+#' @param ... PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @seealso 
+#'  \code{\link[Seurat]{reexports}}
+#'  \code{\link[ropls]{opls}}
+#' @rdname PerformOPLS.plus.seurat
+#' @export 
+#' @importFrom Seurat Idents
+#' @importFrom ropls opls
 PerformOPLS.plus.seurat = function(seurat.object, 
                                ident.1, 
                                ident.2 = NULL,
@@ -927,6 +1141,27 @@ PerformOPLS.plus.seurat = function(seurat.object,
   return(opls.res)
 }
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param data PARAM_DESCRIPTION
+#' @param annotation PARAM_DESCRIPTION
+#' @param ident.1 PARAM_DESCRIPTION
+#' @param ident.2 PARAM_DESCRIPTION, Default: NULL
+#' @param features PARAM_DESCRIPTION, Default: NULL
+#' @param ... PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @seealso 
+#'  \code{\link[ropls]{opls}}
+#' @rdname PerformOPLS.plus
+#' @export 
+#' @importFrom ropls opls
 PerformOPLS.plus = function(data,
                                          annotation,       
                                          ident.1, 
@@ -982,6 +1217,23 @@ PerformOPLS.plus = function(data,
 
 
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param data PARAM_DESCRIPTION
+#' @param annotation PARAM_DESCRIPTION
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
+#' @param k.range PARAM_DESCRIPTION, Default: c(2, 30)
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname ModulonIdent
+#' @export 
 ModulonIdent = function(data, annotation,BackgroundClasses=NULL,QueryClasses=NULL, k.range = c(2,30)){
   library(dplyr)
   library(AUCell)
@@ -1046,6 +1298,23 @@ ModulonIdent = function(data, annotation,BackgroundClasses=NULL,QueryClasses=NUL
 }
 
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param data PARAM_DESCRIPTION
+#' @param modulons PARAM_DESCRIPTION
+#' @param annotation PARAM_DESCRIPTION
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param TargetState PARAM_DESCRIPTION, Default: NULL
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname ModulonSelect
+#' @export 
 ModulonSelect = function(data, modulons, annotation,BackgroundClasses=NULL,TargetState=NULL){
   if(is.null(TargetState)){
     TargetState = unique(annotation)
@@ -1082,6 +1351,27 @@ ModulonSelect = function(data, modulons, annotation,BackgroundClasses=NULL,Targe
 }
 
 
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param Regulons PARAM_DESCRIPTION
+#' @param Modulons PARAM_DESCRIPTION
+#' @param ExpMat PARAM_DESCRIPTION
+#' @param annotation PARAM_DESCRIPTION
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param TargetState PARAM_DESCRIPTION
+#' @param TargetModulon PARAM_DESCRIPTION
+#' @param CombSize PARAM_DESCRIPTION
+#' @param Weights PARAM_DESCRIPTION, Default: NULL
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname ModulonPert
+#' @export 
 ModulonPert = function(Regulons, Modulons, ExpMat, annotation,BackgroundClasses = NULL, TargetState, TargetModulon, CombSize, Weights=NULL){
   if (is.null(BackgroundClasses)){
     BackgroundClasses = unique(annotation)
