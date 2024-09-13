@@ -6,6 +6,7 @@ CLUSTERING_METHODS <- c("complete", "ward.D", "ward.D2", "single", "average", "m
 suppressMessages(require(stats))
 suppressMessages(require(parallel))
 suppressMessages(require(ropls))
+suppressMessages(require(operators))
 
 # Function to get hierarchical clusters
 #' @title FUNCTION_TITLE
@@ -167,8 +168,8 @@ GetSignatureAUC <- function(signature.list, mat, rankings = NULL, scale = FALSE)
 #' @param mat PARAM_DESCRIPTION
 #' @param method PARAM_DESCRIPTION, Default: 'OPLS'
 #' @param annotation PARAM_DESCRIPTION
-#' @param classes PARAM_DESCRIPTION, Default: NULL
-#' @param TargetState PARAM_DESCRIPTION, Default: NULL
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
 #' @examples 
@@ -179,17 +180,23 @@ GetSignatureAUC <- function(signature.list, mat, rankings = NULL, scale = FALSE)
 #' }
 #' @rdname DiscriminantAnalysis
 #' @export 
-DiscriminantAnalysis <- function(mat, method = "OPLS", annotation,classes=NULL,TargetState=NULL) {
-  if (is.null(classes)){
-    classes = unique(annotation)
+DiscriminantAnalysis <- function(mat, method = "OPLS", annotation, BackgroundClasses=NULL, QueryClasses=NULL) {
+  if (is.null(BackgroundClasses)){
+    BackgroundClasses = unique(annotation)
   }
-  if (is.null(TargetState)){
-    TargetState = classes
+  if (is.null(QueryClasses)){
+    QueryClasses = BackgroundClasses
   }
+  
+  TRUTH.vector = annotation %in% c(BackgroundClasses,QueryClasses)
+  
+  mat = mat[,TRUTH.vector]
+  annotation = annotation[TRUTH.vector]
+  
   
   compare.res.df <- data.frame()
   
-  for (population in TargetState) {
+  for (population in QueryClasses) {
     print(paste0('Running discriminant analysis for ', population))
     
     # Step 1: Make the background balanced
@@ -203,7 +210,7 @@ DiscriminantAnalysis <- function(mat, method = "OPLS", annotation,classes=NULL,T
     ident.df$new.ident <- "ND"
     ident.df[ident.df$ident == population,]$new.ident <- "ident.1"
     
-    for (sub.population in classes[classes != population]) {
+    for (sub.population in BackgroundClasses[BackgroundClasses != population]) {
       idx.sub.population <- which(ident.df$ident == sub.population)
       idx.random <- sample.int(n = length(idx.sub.population), size = min.n, replace = FALSE)
       idx.sub.population.random <- idx.sub.population[idx.random]
@@ -211,7 +218,7 @@ DiscriminantAnalysis <- function(mat, method = "OPLS", annotation,classes=NULL,T
     }
     
     # Step 2: Discriminant analysis
-    marker.res <- FindMarkersOPLS(
+    marker.res <- RunOPLS(
       mat = mat,
       annotation = ident.df$new.ident,
       ident.1 = "ident.1", 
@@ -247,10 +254,10 @@ DiscriminantAnalysis <- function(mat, method = "OPLS", annotation,classes=NULL,T
 #' }
 #' @seealso 
 #'  \code{\link[ropls]{opls}}
-#' @rdname FindMarkersOPLS
+#' @rdname RunOPLS
 #' @export 
 #' @importFrom ropls opls
-FindMarkersOPLS <- function(mat, annotation, ident.1, ident.2 = NULL, scale_weights = TRUE, scale_vipVn = TRUE, ...) {
+RunOPLS <- function(mat, annotation, ident.1, ident.2 = NULL, scale_weights = TRUE, scale_vipVn = TRUE, ...) {
   mat <- t(mat)
   
   # Get the classes
@@ -470,7 +477,8 @@ strsplit2 = function (x, split, ...) {
 #' @description FUNCTION_DESCRIPTION
 #' @param data PARAM_DESCRIPTION, Default: NULL
 #' @param annotation PARAM_DESCRIPTION, Default: NULL
-#' @param classes PARAM_DESCRIPTION, Default: NULL
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
 #' @param features PARAM_DESCRIPTION, Default: NULL
 #' @param reduction.name PARAM_DESCRIPTION, Default: NULL
 #' @param pairwise PARAM_DESCRIPTION, Default: NULL
@@ -482,12 +490,13 @@ strsplit2 = function (x, split, ...) {
 #'  #EXAMPLE1
 #'  }
 #' }
-#' @rdname RunOPLSDA
+#' @rdname DiscriminantAnalysis_Plus
 #' @export 
-RunOPLSDA = function(
+DiscriminantAnalysis_Plus = function(
     data = NULL, 
     annotation = NULL,
-    classes = NULL,
+    BackgroundClasses = NULL,
+    QueryClasses = NULL,
     features = NULL,
     reduction.name = NULL,
     pairwise = NULL
@@ -502,22 +511,27 @@ RunOPLSDA = function(
   if (is.null(reduction.name)){
     reduction.name = 'OPLSDA'
   }
+  if (is.null(BackgroundClasses)){
+    BackgroundClasses = unique(annotation)
+  }
+  if (is.null(QueryClasses)){
+    QueryClasses = BackgroundClasses
+  }
+  
+  TRUTH.vector = annotation %in% c(BackgroundClasses,QueryClasses)
+  
+  data = data[features,TRUTH.vector]
+  annotation = annotation[TRUTH.vector]
   
   #Store original Seurat object idents
   idents.backup = annotation
   
-  # Get the list of classes to compare with the background
-  
-  if (is.null(classes)){
-    classes = unique(annotation)
-  }
-  
   if(!isTRUE(pairwise)){
     results.list = list()
-    for(population in classes){
+    for(population in QueryClasses){
       idents.tmp = ifelse(idents.backup == population,"ident.1","ident.2")
       
-      opls.res = FindMarkersOPLS.plus(data = data,
+      opls.res = RunOPLS.plus(data = data,
                                                features = features,
                                                annotation = idents.tmp,
                                                ident.1 = "ident.1", 
@@ -579,14 +593,14 @@ RunOPLSDA = function(
   }
   
   if(isTRUE(pairwise)){
-    tests.for = combn(length(classes), 2, FUN = NULL, simplify = TRUE)
+    tests.for = combn(length(QueryClasses), 2, FUN = NULL, simplify = TRUE)
     test.rev = rbind(tests.for[2,],tests.for[1,])
     tests = cbind(tests.for,test.rev)
     
     results.list = list()
     for(i in 1:ncol(tests)){
-      population.1 = as.character(classes[tests[1,i]])
-      population.2 = as.character(classes[tests[2,i]])
+      population.1 = as.character(QueryClasses[tests[1,i]])
+      population.2 = as.character(QueryClasses[tests[2,i]])
       # Step 1: Make the background balanced
       # Get ident.df
       ident.df = data.frame(ident=idents.backup)
@@ -595,11 +609,11 @@ RunOPLSDA = function(
       ident.df[ident.df$ident == population.1,]$new.ident = "ident.1"
       ident.df[ident.df$ident == population.2,]$new.ident = "ident.2"
       
-      opls.res = FindMarkersOPLS.plus(data = data,
-                                               features = features,
-                                               annotation = ident.df$new.ident,
-                                               ident.1 = "ident.1", 
-                                               ident.2 = "ident.2")
+      opls.res = RunOPLS.plus(data = data,
+                                      features = features,
+                                      annotation = ident.df$new.ident,
+                                      ident.1 = "ident.1", 
+                                      ident.2 = "ident.2")
       
       # Complete loadings
       missing = setdiff(features,rownames(opls.res@loadingMN))
@@ -731,7 +745,8 @@ RunOPLSDA = function(
 #' @param slot PARAM_DESCRIPTION, Default: 'data'
 #' @param annotation PARAM_DESCRIPTION, Default: NULL
 #' @param features PARAM_DESCRIPTION, Default: NULL
-#' @param classes PARAM_DESCRIPTION, Default: NULL
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
 #' @param reduction.name PARAM_DESCRIPTION, Default: NULL
 #' @param pairwise PARAM_DESCRIPTION, Default: NULL
 #' @return OUTPUT_DESCRIPTION
@@ -744,15 +759,16 @@ RunOPLSDA = function(
 #' }
 #' @seealso 
 #'  \code{\link[Seurat]{reexports}}
-#' @rdname RunOPLSDA_Seurat
+#' @rdname DiscriminantAnalysis_Plus_Seurat
 #' @export 
 #' @importFrom Seurat Idents CreateDimReducObject
-RunOPLSDA_Seurat = function(seurat.object = NULL, 
+DiscriminantAnalysis_Plus_Seurat = function(seurat.object = NULL, 
                             assay = NULL, 
                             slot = "data",
                             annotation = NULL,
                             features = NULL,
-                            classes = NULL,
+                            BackgroundClasses = NULL,
+                            QueryClasses = NULL,
                             reduction.name = NULL,
                             pairwise = NULL) {
   if (is.null(pairwise)){
@@ -768,6 +784,21 @@ RunOPLSDA_Seurat = function(seurat.object = NULL,
   if (is.null(reduction.name)){
     reduction.name = 'OPLSDA'
   }
+  
+  if (is.null(BackgroundClasses)){
+    BackgroundClasses = unique(annotation)
+  }
+  if (is.null(QueryClasses)){
+    QueryClasses = BackgroundClasses
+  }
+  
+  #TRUTH.vector = annotation %in% c(BackgroundClasses,QueryClasses)
+  
+  #data = data[features,TRUTH.vector]
+  #annotation = annotation[TRUTH.vector]
+  
+  
+  
   #Store original Seurat object idents
   idents.backup = Seurat::Idents(object = seurat.object)
   
@@ -783,20 +814,21 @@ RunOPLSDA_Seurat = function(seurat.object = NULL,
   
   if(!isTRUE(pairwise)){
     results.list = list()
-    for(population in classes){
+    for(population in QueryClasses){
       # Step 1: Make the background balanced
       # Get ident.df
       ident.df = seurat.object@meta.data[, annotation, drop = F]
       colnames(ident.df) = c("ident")
       
-      ident.df$new.ident = "ident.2"
+      ident.df$new.ident = "ident.3"
+      ident.df[ident.df$ident %in% BackgroundClasses,]$new.ident = "ident.2"
       ident.df[ident.df$ident == population,]$new.ident = "ident.1"
       
       # Set the Idents
       seurat.object@meta.data$new.ident = ident.df[rownames(seurat.object@meta.data),]$new.ident
       Seurat::Idents(seurat.object) = seurat.object$new.ident
       
-      opls.res = FindMarkersOPLS.plus.seurat(seurat.object = seurat.object,
+      opls.res = RunOPLS.plus.seurat(seurat.object = seurat.object,
                                      assay = assay,
                                      features = features,
                                      slot = slot,
@@ -861,14 +893,14 @@ RunOPLSDA_Seurat = function(seurat.object = NULL,
   }
   
   if(isTRUE(pairwise)){
-    tests.for = combn(length(classes), 2, FUN = NULL, simplify = TRUE)
+    tests.for = combn(length(QueryClasses), 2, FUN = NULL, simplify = TRUE)
     test.rev = rbind(tests.for[2,],tests.for[1,])
     tests = cbind(tests.for,test.rev)
     
     results.list = list()
     for(i in 1:ncol(tests)){
-      population.1 = as.character(classes[tests[1,i]])
-      population.2 = as.character(classes[tests[2,i]])
+      population.1 = as.character(QueryClasses[tests[1,i]])
+      population.2 = as.character(QueryClasses[tests[2,i]])
       # Step 1: Make the background balanced
       # Get ident.df
       ident.df = seurat.object@meta.data[, annotation, drop = F]
@@ -882,7 +914,7 @@ RunOPLSDA_Seurat = function(seurat.object = NULL,
       seurat.object@meta.data$new.ident = ident.df[rownames(seurat.object@meta.data),]$new.ident
       Seurat::Idents(seurat.object) = seurat.object$new.ident
       
-      opls.res = FindMarkersOPLS.plus.seurat(seurat.object = seurat.object,
+      opls.res = RunOPLS.plus.seurat(seurat.object = seurat.object,
                                      assay = assay,
                                      features = features,
                                      slot = slot,
@@ -1050,11 +1082,11 @@ RunOPLSDA_Seurat = function(seurat.object = NULL,
 #' @seealso 
 #'  \code{\link[Seurat]{reexports}}
 #'  \code{\link[ropls]{opls}}
-#' @rdname FindMarkersOPLS.plus.seurat
+#' @rdname RunOPLS.plus.seurat
 #' @export 
 #' @importFrom Seurat Idents
 #' @importFrom ropls opls
-FindMarkersOPLS.plus.seurat = function(seurat.object, 
+RunOPLS.plus.seurat = function(seurat.object, 
                                ident.1, 
                                ident.2 = NULL,
                                features = NULL,
@@ -1127,10 +1159,10 @@ FindMarkersOPLS.plus.seurat = function(seurat.object,
 #' }
 #' @seealso 
 #'  \code{\link[ropls]{opls}}
-#' @rdname FindMarkersOPLS.plus
+#' @rdname RunOPLS.plus
 #' @export 
 #' @importFrom ropls opls
-FindMarkersOPLS.plus = function(data,
+RunOPLS.plus = function(data,
                                          annotation,       
                                          ident.1, 
                                          ident.2 = NULL,
@@ -1185,11 +1217,12 @@ FindMarkersOPLS.plus = function(data,
 
 
 
-
 #' @title FUNCTION_TITLE
 #' @description FUNCTION_DESCRIPTION
 #' @param data PARAM_DESCRIPTION
 #' @param annotation PARAM_DESCRIPTION
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
+#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
 #' @param k.range PARAM_DESCRIPTION, Default: c(2, 30)
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
@@ -1201,15 +1234,39 @@ FindMarkersOPLS.plus = function(data,
 #' }
 #' @rdname ModulonIdent
 #' @export 
-ModulonIdent = function(data, annotation, k.range = c(2,30)){
+ModulonIdent = function(data, annotation,BackgroundClasses=NULL,QueryClasses=NULL, k.range = c(2,30)){
   library(dplyr)
   library(AUCell)
+  if (is.null(BackgroundClasses)){
+    BackgroundClasses = unique(annotation)
+  }
+  if (is.null(QueryClasses)){
+    QueryClasses = BackgroundClasses
+  }
+  
+  data.backup = data
+  annotation.backup = annotation
+  
+  TRUTH.vector.query = annotation %in% c(QueryClasses)
+  TRUTH.vector.background = annotation %in% c(BackgroundClasses)
+  TRUTH.vector.query.and.background = annotation %in% c(QueryClasses,BackgroundClasses)
+  
+  data.query = data[, TRUTH.vector.query]
+  annotation.query = annotation[ TRUTH.vector.query]
+  
+  data.background = data[, TRUTH.vector.background]
+  annotation.background = annotation[ TRUTH.vector.background]
+  
+  data.query.and.background = data[, TRUTH.vector.query.and.background]
+  annotation.query.and.background = annotation[ TRUTH.vector.query.and.background]
+  
+  
   # Generate TF clusters at different clustering resolutions
   clusters <- FindFeatureCluster(
     distance.method <- "euclidean",
     clustering.method <- "complete",
-    mat = data, 
-    annotation = annotation, 
+    mat = data.query, 
+    annotation = annotation.query, 
     cluster.nums = k.range)
   # Calculate cluster's signatures scores (AUC)
   clusters.AUC <- GetSignatureAUC(
@@ -1219,7 +1276,10 @@ ModulonIdent = function(data, annotation, k.range = c(2,30)){
   clusters.DA <- DiscriminantAnalysis(
     mat = clusters.AUC,
     method = "OPLS", 
-    annotation = annotation)
+    annotation = annotation,
+    BackgroundClasses = BackgroundClasses,
+    QueryClasses = QueryClasses
+    )
   # Calculate the global discriminant score (GDS)
   GDS = CalculateGDS(clusters.DA=clusters.DA)
   
@@ -1230,8 +1290,8 @@ ModulonIdent = function(data, annotation, k.range = c(2,30)){
   modulons <- FindFeatureCluster(
     distance.method <- "euclidean",
     clustering.method <- "complete",
-    mat = data, 
-    annotation = annotation, 
+    mat = data.query, 
+    annotation = annotation.query, 
     cluster.nums = Best.k)
   
   return(list(Modulons=modulons,GDS=GDS))
@@ -1243,6 +1303,7 @@ ModulonIdent = function(data, annotation, k.range = c(2,30)){
 #' @param data PARAM_DESCRIPTION
 #' @param modulons PARAM_DESCRIPTION
 #' @param annotation PARAM_DESCRIPTION
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
 #' @param TargetState PARAM_DESCRIPTION, Default: NULL
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
@@ -1254,20 +1315,26 @@ ModulonIdent = function(data, annotation, k.range = c(2,30)){
 #' }
 #' @rdname ModulonSelect
 #' @export 
-ModulonSelect = function(data, modulons, annotation,TargetState=NULL){
+ModulonSelect = function(data, modulons, annotation,BackgroundClasses=NULL,TargetState=NULL){
   if(is.null(TargetState)){
     TargetState = unique(annotation)
   }
+  if (is.null(BackgroundClasses)){
+    BackgroundClasses = unique(annotation)
+  }
+  
   # Calculate modulon signatures across states
   modulons.AUC <- GetSignatureAUC(
     mat = data,
     signature.list = modulons)
+  
   # Modulon signature cells state discriminant analysis
   modulons.DA <- DiscriminantAnalysis(
     mat = modulons.AUC,
     method = "OPLS", 
     annotation = annotation,
-    TargetState = TargetState
+    BackgroundClasses = BackgroundClasses,
+    QueryClasses = TargetState
   )
   
   modulons.DA.split = split(modulons.DA,modulons.DA$ident.1)
@@ -1290,6 +1357,7 @@ ModulonSelect = function(data, modulons, annotation,TargetState=NULL){
 #' @param Modulons PARAM_DESCRIPTION
 #' @param ExpMat PARAM_DESCRIPTION
 #' @param annotation PARAM_DESCRIPTION
+#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
 #' @param TargetState PARAM_DESCRIPTION
 #' @param TargetModulon PARAM_DESCRIPTION
 #' @param CombSize PARAM_DESCRIPTION
@@ -1304,7 +1372,11 @@ ModulonSelect = function(data, modulons, annotation,TargetState=NULL){
 #' }
 #' @rdname ModulonPert
 #' @export 
-ModulonPert = function(Regulons, Modulons, ExpMat, annotation, TargetState, TargetModulon, CombSize, Weights=NULL){
+ModulonPert = function(Regulons, Modulons, ExpMat, annotation,BackgroundClasses = NULL, TargetState, TargetModulon, CombSize, Weights=NULL){
+  if (is.null(BackgroundClasses)){
+    BackgroundClasses = unique(annotation)
+  }
+  
   # Collect TF-gene regulation weights
   
   if(!is.null(Weights)){
@@ -1316,16 +1388,17 @@ ModulonPert = function(Regulons, Modulons, ExpMat, annotation, TargetState, Targ
   modulon.query = TargetModulon
   query = Modulons[[modulon.query]]
   targets=unique(unlist(Regulons[query]))
-  OPLSDA.results=RunOPLSDA(
+  OPLSDA.results=DiscriminantAnalysis_Plus(
     data = ExpMat[targets,], 
     annotation = annotation,
-    classes = TargetState,
+    BackgroundClasses = BackgroundClasses,
+    QueryClasses = TargetState,
     features = targets,
     reduction.name = 'OPLSDA_RNA_M_Targets',
     pairwise = F
   )
   
-  weightStarMN.tmp = OPLSDA.results[["CD8_Tex"]]@weightStarMN
+  weightStarMN.tmp = OPLSDA.results[[TargetState]]@weightStarMN
   missing = setdiff(targets,rownames(weightStarMN.tmp))
   if(length(missing)>0){
     df.tmp = data.frame(p1=missing)

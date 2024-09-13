@@ -147,7 +147,7 @@ DiscriminantAnalysis <- function(mat, method = "OPLS", annotation, BackgroundCla
     }
     
     # Step 2: Discriminant analysis
-    marker.res <- PerformOPLS(
+    marker.res <- RunOPLS(
       mat = mat,
       annotation = ident.df$new.ident,
       ident.1 = "ident.1", 
@@ -164,7 +164,7 @@ DiscriminantAnalysis <- function(mat, method = "OPLS", annotation, BackgroundCla
   return(compare.res.df)
 }
 
-PerformOPLS <- function(mat, annotation, ident.1, ident.2 = NULL, scale_weights = TRUE, scale_vipVn = TRUE, ...) {
+RunOPLS <- function(mat, annotation, ident.1, ident.2 = NULL, scale_weights = TRUE, scale_vipVn = TRUE, ...) {
   mat <- t(mat)
   
   # Get the classes
@@ -365,7 +365,7 @@ DiscriminantAnalysis_Plus = function(
     for(population in QueryClasses){
       idents.tmp = ifelse(idents.backup == population,"ident.1","ident.2")
       
-      opls.res = PerformOPLS.plus(data = data,
+      opls.res = RunOPLS.plus(data = data,
                                                features = features,
                                                annotation = idents.tmp,
                                                ident.1 = "ident.1", 
@@ -443,7 +443,7 @@ DiscriminantAnalysis_Plus = function(
       ident.df[ident.df$ident == population.1,]$new.ident = "ident.1"
       ident.df[ident.df$ident == population.2,]$new.ident = "ident.2"
       
-      opls.res = PerformOPLS.plus(data = data,
+      opls.res = RunOPLS.plus(data = data,
                                       features = features,
                                       annotation = ident.df$new.ident,
                                       ident.1 = "ident.1", 
@@ -638,7 +638,7 @@ DiscriminantAnalysis_Plus_Seurat = function(seurat.object = NULL,
       seurat.object@meta.data$new.ident = ident.df[rownames(seurat.object@meta.data),]$new.ident
       Seurat::Idents(seurat.object) = seurat.object$new.ident
       
-      opls.res = PerformOPLS.plus.seurat(seurat.object = seurat.object,
+      opls.res = RunOPLS.plus.seurat(seurat.object = seurat.object,
                                      assay = assay,
                                      features = features,
                                      slot = slot,
@@ -724,7 +724,7 @@ DiscriminantAnalysis_Plus_Seurat = function(seurat.object = NULL,
       seurat.object@meta.data$new.ident = ident.df[rownames(seurat.object@meta.data),]$new.ident
       Seurat::Idents(seurat.object) = seurat.object$new.ident
       
-      opls.res = PerformOPLS.plus.seurat(seurat.object = seurat.object,
+      opls.res = RunOPLS.plus.seurat(seurat.object = seurat.object,
                                      assay = assay,
                                      features = features,
                                      slot = slot,
@@ -872,7 +872,7 @@ DiscriminantAnalysis_Plus_Seurat = function(seurat.object = NULL,
 }
 
 
-PerformOPLS.plus.seurat = function(seurat.object, 
+RunOPLS.plus.seurat = function(seurat.object, 
                                ident.1, 
                                ident.2 = NULL,
                                features = NULL,
@@ -927,7 +927,7 @@ PerformOPLS.plus.seurat = function(seurat.object,
   return(opls.res)
 }
 
-PerformOPLS.plus = function(data,
+RunOPLS.plus = function(data,
                                          annotation,       
                                          ident.1, 
                                          ident.2 = NULL,
