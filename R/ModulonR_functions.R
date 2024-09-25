@@ -490,9 +490,9 @@ strsplit2 = function (x, split, ...) {
 #'  #EXAMPLE1
 #'  }
 #' }
-#' @rdname DiscriminantAnalysis_plus
+#' @rdname DiscriminantAnalysis.plus
 #' @export 
-DiscriminantAnalysis_plus = function(
+DiscriminantAnalysis.plus = function(
     data = NULL, 
     annotation = NULL,
     BackgroundClasses = NULL,
@@ -759,10 +759,10 @@ DiscriminantAnalysis_plus = function(
 #' }
 #' @seealso 
 #'  \code{\link[Seurat]{reexports}}
-#' @rdname DiscriminantAnalysis_plus_Seurat
+#' @rdname DiscriminantAnalysis.plus.seurat
 #' @export 
 #' @importFrom Seurat Idents CreateDimReducObject
-DiscriminantAnalysis_plus_Seurat = function(seurat.object = NULL, 
+DiscriminantAnalysis.plus.seurat = function(seurat.object = NULL, 
                             assay = NULL, 
                             slot = "data",
                             annotation = NULL,
@@ -1388,7 +1388,7 @@ ModulonPert = function(Regulons, Modulons, ExpMat, annotation,BackgroundClasses 
   modulon.query = TargetModulon
   query = Modulons[[modulon.query]]
   targets=unique(unlist(Regulons[query]))
-  OPLSDA.results=DiscriminantAnalysis_plus(
+  OPLSDA.results=DiscriminantAnalysis.plus(
     data = ExpMat[targets,], 
     annotation = annotation,
     BackgroundClasses = BackgroundClasses,
