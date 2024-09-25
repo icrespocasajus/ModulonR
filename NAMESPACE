@@ -2,8 +2,8 @@
 
 export(CalculateGDS)
 export(DiscriminantAnalysis)
-export(DiscriminantAnalysis_Plus)
-export(DiscriminantAnalysis_Plus_Seurat)
+export(DiscriminantAnalysis_plus)
+export(DiscriminantAnalysis_plus_Seurat)
 export(FindFeatureCluster)
 export(GetHierarchicalClusters)
 export(GetSignatureAUC)
