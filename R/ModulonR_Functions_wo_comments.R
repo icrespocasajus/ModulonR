@@ -567,7 +567,7 @@ DiscriminantAnalysis.plus = function(
   results.list[['opls.axis.names.loadings']] = opls.axis.names.loadings
   results.list[['opls.axis.names.embeddings']] = opls.axis.names.embeddings
   
-  saveRDS(file="OPLSDA.results.list.Rds",results.list)
+  #saveRDS(file="OPLSDA.results.list.Rds",results.list)
   
   return(results.list)
 }
@@ -852,7 +852,7 @@ DiscriminantAnalysis.plus.seurat = function(seurat.object = NULL,
   results.list[['opls.axis.names.loadings']] = opls.axis.names.loadings
   results.list[['opls.axis.names.embeddings']] = opls.axis.names.embeddings
   
-  saveRDS(file="OPLSDA.results.list.Rds",results.list)
+  #saveRDS(file="OPLSDA.results.list.Rds",results.list)
   
   DimReducObject = Seurat::CreateDimReducObject(embeddings = as.matrix(df.embeddings),
                                                 loadings = as.matrix(df.loadings),
