@@ -301,25 +301,27 @@ head(ModulonPert.Results[["Combinations"]])[c(1:5),c(2:5)]
 
 # Authors
 
-<img src="./man/figures/README-isaaccrespo_WEB_big.jpg" width="30%" />
+<img src="./man/figures/README-isaaccrespo.jpg" width="10%" />
 
 Isaac Crespo, phD  
 Senior Computational Scientist  
 CHUV/UNIL \| George Coukos group  
 Ludwig Institute for Cancer Research \| Lausanne Branch  
-AGORA, Bugnon 25A, 1005 Lausanne, 4th floor, Room 026  
+AGORA, Bugnon 25A, 1005 Lausanne (Switzerland), 4th floor, Room 026  
 <isaaccrespo@hotmail.com>
+
+<img src="./man/figures/README-anarodriguez.png" width="10%" />
 
 Ana Rodriguez Sanchez-Archidona, phD  
 Bioinformatician  
 CHUV/UNIL \| George Coukos group  
 Ludwig Institute for Cancer Research \| Lausanne Branch  
-AGORA, Bugnon 25A, 1005 Lausanne, 4th floor, Room 026  
+AGORA, Bugnon 25A, 1005 Lausanne (Switzerland), 4th floor, Room 190  
 <arsanchezarchidona@gmail.com>
 
 Remy Petremand  
 PhD student  
 CHUV/UNIL \| Alexandre Harari group  
 Ludwig Institute for Cancer Research \| Lausanne Branch  
-AGORA, Bugnon 25A, 1005 Lausanne, 4th floor, Room 026  
+AGORA, Bugnon 25A, 1005 Lausanne (Switzerland), 4th floor, Room 026  
 <remy.petremand@chuv.ch>
