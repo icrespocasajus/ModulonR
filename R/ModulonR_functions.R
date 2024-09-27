@@ -1341,7 +1341,8 @@ ModulonSelect = function(data, modulons, annotation,BackgroundClasses=NULL,Targe
   
   Selected_Modulon = lapply(modulons.DA.split,function(x){
     input.tmp = x
-    input.tmp$label = factor(as.character(strsplit2(input.tmp$feature,'[.]')[,2]),levels = as.character(strsplit2(input.tmp$feature,'[.]')[,2]))
+    #input.tmp$label = factor(as.character(strsplit2(input.tmp$feature,'[.]')[,2]),levels = as.character(strsplit2(input.tmp$feature,'[.]')[,2]))
+    input.tmp$label = input.tmp$feature
     input.tmp = input.tmp[order(input.tmp$weightStarMN,decreasing = T),]
     input.tmp$order = factor(c(1:nrow(input.tmp)))
     best.modulon = as.character(input.tmp$feature[which.max(input.tmp$weightStarMN)])
