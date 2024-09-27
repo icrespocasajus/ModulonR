@@ -2,11 +2,19 @@
 output: github_document
 ---
 
+<<<<<<< HEAD
+=======
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+>>>>>>> c4160b7bd8cc8fffa9885973eb1f6c861b2dc56b
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+<<<<<<< HEAD
   dpi=300,
+=======
+>>>>>>> c4160b7bd8cc8fffa9885973eb1f6c861b2dc56b
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
@@ -14,20 +22,33 @@ knitr::opts_chunk$set(
 
 # ModulonR
 
+<<<<<<< HEAD
 ModulonR identifies "modulons"—clusters of TFs exhibiting coordinated activity across different cell states, which are further characterized based on their ability to discriminate a particular cell state from the rest. Next, by leveraging exploration of the inferred gene regulatory network (GRN), ModulonR predicts the set of TFs that might be essential for the commitment/stability of a particular cell state. ModulonR takes, as input, the transcription factor (TF) activity matrix with single-cell resolution and a GRN. The Analysis consists of the following three steps: 1) Modulon identification through hierarchical clustering of TFs by their activity across cell states. The resulting clustering tree is iteratively pruned at different heights (k clustering parameter), and the resulting cluster-derived signatures are calculated for each cell. Subsequently, a multivariate discriminant analysis (OPLSDA) for each pre-known T cell state is performed, considering all the cluster signatures together. A global discriminant score (GDS) is then calculated for each k to summarize the discriminant power for all cells into a single numerical value. The k with the best GDS determines the modulons; 2) modulon selection. The modulon signatures are calculated for each cell and used as input for a cell state discriminant analysis. The top discriminant modulon of a given state is selected; 3) modulon perturbation analysis. Finding combinations of an arbitrary number of KO target TFs for optimal disruption of the modulon activity and the T cell states that depend on it. To this end, both the strength of the TF-gene regulations (GRN weights) and the discriminancy (assumed as relative importance) of the regulated gene for specific T cell states are considered. Combinations of modulon elements and are ranked using the weighted coverage score (WCS), where high values represent combinations of TFs that strongly regulate many genes with high discriminancy within the cell state to be disrupted.
 
+=======
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of ModulonR is to ...
+>>>>>>> c4160b7bd8cc8fffa9885973eb1f6c861b2dc56b
 
 ## Installation
 
 You can install the development version of ModulonR from [GitHub](https://github.com/) with:
 
+<<<<<<< HEAD
 ```{r,eval=FALSE}
 install.packages("devtools")
+=======
+``` r
+# install.packages("devtools")
+>>>>>>> c4160b7bd8cc8fffa9885973eb1f6c861b2dc56b
 devtools::install_github("icrespocasajus/ModulonR")
 ```
 
 ## Example
 
+<<<<<<< HEAD
 This is a basic example which shows you how to use ModulonR.
 
 Load requiered packages:
@@ -293,3 +314,27 @@ CHUV/UNIL | Alexandre Harari group
 Ludwig Institute for Cancer Research |  Lausanne Branch  
 AGORA, Bugnon 25A, 1005 Lausanne, 4th floor, Room 026  
 remy.petremand@chuv.ch
+=======
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(ModulonR)
+## basic example code
+```
+
+What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+
+```{r cars}
+summary(cars)
+```
+
+You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
+
+You can also embed plots, for example:
+
+```{r pressure, echo = FALSE}
+plot(pressure)
+```
+
+In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+>>>>>>> c4160b7bd8cc8fffa9885973eb1f6c861b2dc56b
