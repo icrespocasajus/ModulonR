@@ -9,20 +9,26 @@ suppressMessages(require(ropls))
 suppressMessages(require(operators))
 
 # Function to get hierarchical clusters
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param mat PARAM_DESCRIPTION
-#' @param distance.method PARAM_DESCRIPTION, Default: DISTANCE_METHODS
-#' @param clustering.method PARAM_DESCRIPTION, Default: CLUSTERING_METHODS
-#' @param scale PARAM_DESCRIPTION, Default: TRUE
-#' @param ... PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
+#' @title Get Hierarchical Clusters
+#' @description
+#' This function computes the hierarchical clustering tree of the features in the rows of a matrix 
+#' using the `stats::hclust()` method. 
+#' @param mat The input matrix for which the features in the rows will be clustered.
+#' @param distance.method The distance method to use in `stats::dist()`.
+#' @param clustering.method The hierarchical clustering method to use in `stats::hclust()`. Default is "complete" (see ?stats::hclust for more information).
+#' @param scale Logical argument indicating whether the rows of the input matrix should be scaled (mean-centered and divided by the standard deviation). Default is TRUE.
+#' @param ... Additional parameters for `stats::hclust`.
+#' @return An object of class hclust (see ?stats::hclust).
 #' @details DETAILS
 #' @examples 
 #' \dontrun{
 #' if(interactive()){
-#'  #EXAMPLE1
-#'  }
+#'   # Generate a random matrix with 100 rows and 5 columns
+#'   set.seed(123)
+#'   random_matrix <- matrix(abs(rnorm(100 * 5)), nrow = 100, ncol = 5)
+#'   rownames(random_matrix) <- paste0("F", 1:100)
+#'   plot(GetHierarchicalClusters(mat = random_matrix))
+#'   }
 #' }
 #' @rdname GetHierarchicalClusters
 #' @export 
@@ -52,22 +58,32 @@ GetHierarchicalClusters <- function(mat,
   return(hclust.res)
 }
 
-# Function to find feature clusters
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param mat PARAM_DESCRIPTION
-#' @param annotation PARAM_DESCRIPTION, Default: NULL
-#' @param cluster.nums PARAM_DESCRIPTION, Default: 2:10
-#' @param distance.method PARAM_DESCRIPTION, Default: DISTANCE_METHODS
-#' @param clustering.method PARAM_DESCRIPTION, Default: CLUSTERING_METHODS
-#' @param ... PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
+#' @title Find Feature Clusters
+#' @description
+#' This function takes a matrix and groups similar features in the rows into clusters through hierarchical clustering. 
+#' The total number of clusters can be set using the parameter `cluster.nums`.
+#' The function allows the samples (columns) to be aggregated by a group annotation before clustering (see parameter `annotation`).
+#' @param mat A matrix with features in rows and samples in columns.
+#' @param annotation A character vector containing the annotation of the samples (columns) for data aggregation. 
+#' Aggregation is performed using a simple mean. If NULL, no aggregation is performed. Default is NULL.
+#' @param cluster.nums A numerical vector specifying the number of clusters. Default is 2:10.
+#' @param distance.method The distance method to use in `stats::dist()`.
+#' @param clustering.method The hierarchical clustering method to use in `stats::hclust()`. Default is "complete" (see ?stats::hclust for more information).
+#' @param ... Additional parameters for `stats::hclust()` (see also GetHierarchicalClusters()).
+#' @return A list containing the feature cluster composition. 
+#' The names of the list indicate the cluster ID in the following structure:
+#' name = <one total number of clusters in cluster.nums>"."<cluster number>
+#' The values are lists of genes, i.e., the cluster's signature.
 #' @examples 
 #' \dontrun{
 #' if(interactive()){
-#'  #EXAMPLE1
-#'  }
+#'   # Generate a random matrix with 100 rows and 5 columns
+#'   set.seed(123)
+#'   random_matrix <- matrix(abs(rnorm(100 * 5)), nrow = 100, ncol = 5)
+#'   rownames(random_matrix) <- paste0("F", 1:100)
+#'   signature.list <- FindFeatureCluster(mat = random_matrix, annotation = c('a','a','a','b','b'))
+#'   signature.list[c(2:5)]
+#'   }
 #' }
 #' @rdname FindFeatureCluster
 #' @export 
@@ -111,20 +127,30 @@ FindFeatureCluster <- function(mat,
   return(markers.res)
 }
 
-# Function to calculate signature AUC
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param signature.list PARAM_DESCRIPTION
-#' @param mat PARAM_DESCRIPTION
-#' @param rankings PARAM_DESCRIPTION, Default: NULL
-#' @param scale PARAM_DESCRIPTION, Default: FALSE
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
+# Wrapper function to calculate signature AUC
+#' @title Get Signature AUC
+#' @description
+#' This function computes the AUC signature score of the signatures in a 
+#' signature list using the `AUCell::AUC()` function. 
+#' It accepts a list of signatures (see parameter `signature.list`). 
+#' Note that this list can be obtained using the function `FindFeatureCluster()`.
+#' The input data can be either a matrix with features in rows and samples in columns or the 
+#' "rankings" for each sample as defined by `AUCell::AUCell_buildRankings()`.
+#' @param signature.list A named list of the signatures.
+#' @param mat A matrix with features in rows and samples in columns.
+#' @param rankings Cells ranking as defined by `AUCell::AUCell_buildRankings()`. Default is NULL.
+#' @param scale A logical value indicating whether to scale the data between 0 and 1. Default is FALSE.
+#' @return A dataframe containing the signature score (AUC) for all the signatures in `signature.list`, with signatures in rows and samples in columns.
 #' @examples 
 #' \dontrun{
 #' if(interactive()){
-#'  #EXAMPLE1
-#'  }
+#'   # Generate a random matrix with 100 rows and 5 columns
+#'   set.seed(123)
+#'   random_matrix <- matrix(abs(rnorm(100 * 5)), nrow = 100, ncol = 5)
+#'   rownames(random_matrix) <- paste0("F", 1:100)
+#'   signature.list <- FindFeatureCluster(mat = random_matrix, annotation = c('a','a','a','b','b'))
+#'   GetSignatureAUC(signature.list = signature.list, mat = random_matrix)
+#'   }
 #' }
 #' @seealso 
 #'  \code{\link[AUCell]{AUCell_buildRankings}}, \code{\link[AUCell]{AUCell_calcAUC}}, \code{\link[AUCell]{aucellResults-class}}
