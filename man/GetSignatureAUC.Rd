@@ -31,8 +31,8 @@ The input data can be either a matrix with features in rows and samples in colum
 if(interactive()){
   # Generate a random matrix with 100 rows and 5 columns
   set.seed(123)
-  random_matrix <- matrix(abs(rnorm(100 * 5)), nrow = 100, ncol = 5)
-  rownames(random_matrix) <- paste0("F", 1:100)
+  random_matrix <- matrix(abs(rnorm(25 * 5)), nrow = 25, ncol = 5)
+  rownames(random_matrix) <- paste0("F", 1:25)
   signature.list <- FindFeatureCluster(mat = random_matrix, annotation = c('a','a','a','b','b'))
   GetSignatureAUC(signature.list = signature.list, mat = random_matrix)
   }

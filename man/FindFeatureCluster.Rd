@@ -43,8 +43,8 @@ The function allows the samples (columns) to be aggregated by a group annotation
 if(interactive()){
   # Generate a random matrix with 100 rows and 5 columns
   set.seed(123)
-  random_matrix <- matrix(abs(rnorm(100 * 5)), nrow = 100, ncol = 5)
-  rownames(random_matrix) <- paste0("F", 1:100)
+  random_matrix <- matrix(abs(rnorm(25 * 5)), nrow = 25, ncol = 5)
+  rownames(random_matrix) <- paste0("F", 1:25)
   signature.list <- FindFeatureCluster(mat = random_matrix, annotation = c('a','a','a','b','b'))
   signature.list[c(2:5)]
   }
