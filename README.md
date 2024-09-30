@@ -45,7 +45,7 @@ devtools::install_github("icrespocasajus/ModulonR")
 
 This is a basic example which shows you how to use ModulonR.
 
-Load requiered packages:
+Load required packages:
 
 ``` r
 library(ModulonR)
