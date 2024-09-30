@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{FindFeatureCluster}
 \alias{FindFeatureCluster}
-\title{FUNCTION_TITLE}
+\title{Find Feature Clusters}
 \usage{
 FindFeatureCluster(
   mat,
@@ -14,31 +14,39 @@ FindFeatureCluster(
 )
 }
 \arguments{
-\item{mat}{PARAM_DESCRIPTION}
+\item{mat}{A matrix with features in rows and samples in columns.}
 
-\item{annotation}{PARAM_DESCRIPTION, Default: NULL}
+\item{annotation}{A character vector containing the annotation of the samples (columns) for data aggregation.
+Aggregation is performed using a simple mean. If NULL, no aggregation is performed. Default is NULL.}
 
-\item{cluster.nums}{PARAM_DESCRIPTION, Default: 2:10}
+\item{cluster.nums}{A numerical vector specifying the number of clusters. Default is 2:10.}
 
-\item{distance.method}{PARAM_DESCRIPTION, Default: DISTANCE_METHODS}
+\item{distance.method}{The distance method to use in \code{stats::dist()}.}
 
-\item{clustering.method}{PARAM_DESCRIPTION, Default: CLUSTERING_METHODS}
+\item{clustering.method}{The hierarchical clustering method to use in \code{stats::hclust()}. Default is "complete" (see ?stats::hclust for more information).}
 
-\item{...}{PARAM_DESCRIPTION}
+\item{...}{Additional parameters for \code{stats::hclust()} (see also GetHierarchicalClusters()).}
 }
 \value{
-OUTPUT_DESCRIPTION
+A list containing the feature cluster composition.
+The names of the list indicate the cluster ID in the following structure:
+name = \if{html}{\out{<one total number of clusters in cluster.nums>}}"."\if{html}{\out{<cluster number>}}
+The values are lists of genes, i.e., the cluster's signature.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
+This function takes a matrix and groups similar features in the rows into clusters through hierarchical clustering.
+The total number of clusters can be set using the parameter \code{cluster.nums}.
+The function allows the samples (columns) to be aggregated by a group annotation before clustering (see parameter \code{annotation}).
 }
 \examples{
 \dontrun{
 if(interactive()){
- #EXAMPLE1
- }
+  # Generate a random matrix with 100 rows and 5 columns
+  set.seed(123)
+  random_matrix <- matrix(abs(rnorm(100 * 5)), nrow = 100, ncol = 5)
+  rownames(random_matrix) <- paste0("F", 1:100)
+  signature.list <- FindFeatureCluster(mat = random_matrix, annotation = c('a','a','a','b','b'))
+  signature.list[c(2:5)]
+  }
 }
 }

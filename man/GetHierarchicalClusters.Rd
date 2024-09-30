@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{GetHierarchicalClusters}
 \alias{GetHierarchicalClusters}
-\title{FUNCTION_TITLE}
+\title{Get Hierarchical Clusters}
 \usage{
 GetHierarchicalClusters(
   mat,
@@ -13,21 +13,22 @@ GetHierarchicalClusters(
 )
 }
 \arguments{
-\item{mat}{PARAM_DESCRIPTION}
+\item{mat}{The input matrix for which the features in the rows will be clustered.}
 
-\item{distance.method}{PARAM_DESCRIPTION, Default: DISTANCE_METHODS}
+\item{distance.method}{The distance method to use in \code{stats::dist()}.}
 
-\item{clustering.method}{PARAM_DESCRIPTION, Default: CLUSTERING_METHODS}
+\item{clustering.method}{The hierarchical clustering method to use in \code{stats::hclust()}. Default is "complete" (see ?stats::hclust for more information).}
 
-\item{scale}{PARAM_DESCRIPTION, Default: TRUE}
+\item{scale}{Logical argument indicating whether the rows of the input matrix should be scaled (mean-centered and divided by the standard deviation). Default is TRUE.}
 
-\item{...}{PARAM_DESCRIPTION}
+\item{...}{Additional parameters for \code{stats::hclust}.}
 }
 \value{
-OUTPUT_DESCRIPTION
+An object of class hclust (see ?stats::hclust).
 }
 \description{
-FUNCTION_DESCRIPTION
+This function computes the hierarchical clustering tree of the features in the rows of a matrix
+using the \code{stats::hclust()} method.
 }
 \details{
 DETAILS
@@ -35,7 +36,11 @@ DETAILS
 \examples{
 \dontrun{
 if(interactive()){
- #EXAMPLE1
- }
+  # Generate a random matrix with 100 rows and 5 columns
+  set.seed(123)
+  random_matrix <- matrix(abs(rnorm(100 * 5)), nrow = 100, ncol = 5)
+  rownames(random_matrix) <- paste0("F", 1:100)
+  plot(GetHierarchicalClusters(mat = random_matrix))
+  }
 }
 }

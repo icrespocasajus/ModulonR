@@ -2,33 +2,40 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{GetSignatureAUC}
 \alias{GetSignatureAUC}
-\title{FUNCTION_TITLE}
+\title{Get Signature AUC}
 \usage{
 GetSignatureAUC(signature.list, mat, rankings = NULL, scale = FALSE)
 }
 \arguments{
-\item{signature.list}{PARAM_DESCRIPTION}
+\item{signature.list}{A named list of the signatures.}
 
-\item{mat}{PARAM_DESCRIPTION}
+\item{mat}{A matrix with features in rows and samples in columns.}
 
-\item{rankings}{PARAM_DESCRIPTION, Default: NULL}
+\item{rankings}{Cells ranking as defined by \code{AUCell::AUCell_buildRankings()}. Default is NULL.}
 
-\item{scale}{PARAM_DESCRIPTION, Default: FALSE}
+\item{scale}{A logical value indicating whether to scale the data between 0 and 1. Default is FALSE.}
 }
 \value{
-OUTPUT_DESCRIPTION
+A dataframe containing the signature score (AUC) for all the signatures in \code{signature.list}, with signatures in rows and samples in columns.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
+This function computes the AUC signature score of the signatures in a
+signature list using the \code{AUCell::AUC()} function.
+It accepts a list of signatures (see parameter \code{signature.list}).
+Note that this list can be obtained using the function \code{FindFeatureCluster()}.
+The input data can be either a matrix with features in rows and samples in columns or the
+"rankings" for each sample as defined by \code{AUCell::AUCell_buildRankings()}.
 }
 \examples{
 \dontrun{
 if(interactive()){
- #EXAMPLE1
- }
+  # Generate a random matrix with 100 rows and 5 columns
+  set.seed(123)
+  random_matrix <- matrix(abs(rnorm(100 * 5)), nrow = 100, ncol = 5)
+  rownames(random_matrix) <- paste0("F", 1:100)
+  signature.list <- FindFeatureCluster(mat = random_matrix, annotation = c('a','a','a','b','b'))
+  GetSignatureAUC(signature.list = signature.list, mat = random_matrix)
+  }
 }
 }
 \seealso{
