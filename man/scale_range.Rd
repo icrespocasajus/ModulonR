@@ -2,26 +2,24 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{scale_range}
 \alias{scale_range}
-\title{FUNCTION_TITLE}
+\title{scale_range}
 \usage{
 scale_range(x)
 }
 \arguments{
-\item{x}{PARAM_DESCRIPTION}
+\item{x}{Numerical vector.}
 }
 \value{
-OUTPUT_DESCRIPTION
+Numerical vector. The input numerical vector scaled to range from 0 to 1.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
+This function scales a numerical vector from 0 to 1.
 }
 \examples{
 \dontrun{
 if(interactive()){
  #EXAMPLE1
+ scale_range(x = c(0.1, 0.2, 0.1, 0.3))
  }
 }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{DiscriminantAnalysis}
 \alias{DiscriminantAnalysis}
-\title{FUNCTION_TITLE}
+\title{Discriminant Analysis}
 \usage{
 DiscriminantAnalysis(
   mat,
@@ -13,29 +13,19 @@ DiscriminantAnalysis(
 )
 }
 \arguments{
-\item{mat}{PARAM_DESCRIPTION}
+\item{mat}{Matrix with features and samples in rows and columns, respectively.}
 
-\item{method}{PARAM_DESCRIPTION, Default: 'OPLS'}
+\item{method}{Character; the discriminant analysis method. Possible values are: "OPLS" (see \code{FindMarkersOPLS()}).}
 
-\item{annotation}{PARAM_DESCRIPTION}
+\item{annotation}{Character vector with the class of the samples.}
 
-\item{BackgroundClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{BackgroundClasses}{Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL}
 
-\item{QueryClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{QueryClasses}{Character vector with the classes to compare with respect to the background. If NULL, all the classes in annotation will be analyzed (separately) with respect to the background. Default: NULL}
 }
 \value{
-OUTPUT_DESCRIPTION
+Data frame with the discriminant analysis results for each analyzed class.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+This function computes the discriminant analysis (OPLS-DA from the \code{ropls} library), comparing every class in a categorical variable against the background (i.e., the other classes).
 }

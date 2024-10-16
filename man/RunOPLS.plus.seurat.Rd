@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{RunOPLS.plus.seurat}
 \alias{RunOPLS.plus.seurat}
-\title{FUNCTION_TITLE}
+\title{Run OPLS Plus Seurat}
 \usage{
 RunOPLS.plus.seurat(
   seurat.object,
@@ -15,35 +15,31 @@ RunOPLS.plus.seurat(
 )
 }
 \arguments{
-\item{seurat.object}{PARAM_DESCRIPTION}
+\item{seurat.object}{Seurat object.}
 
-\item{ident.1}{PARAM_DESCRIPTION}
+\item{ident.1}{Character, query class.}
 
-\item{ident.2}{PARAM_DESCRIPTION, Default: NULL}
+\item{ident.2}{Character vector with background classes. If NULL, all the classes in Seurat::Idents(object=seurat.object) but the query class will be included, Default: NULL.}
 
-\item{features}{PARAM_DESCRIPTION, Default: NULL}
+\item{features}{Features to be included in the analysis. If NULL, all the features in in the assay and slot are included , Default: NULL.}
 
-\item{assay}{PARAM_DESCRIPTION, Default: NULL}
+\item{assay}{Name of the assay in \code{seurat.object} to pull the slot data from. If NULL, it takes the name of the active assay in \code{seurat.object}, default = NULL.}
 
-\item{slot}{PARAM_DESCRIPTION, Default: 'data'}
-
-\item{...}{PARAM_DESCRIPTION}
+\item{slot}{Slot to pull data from, default: 'data'.}
 }
 \value{
-OUTPUT_DESCRIPTION
+Data frame with a summary of the \code{ropls::opls()}. The columns are:
+
+\itemize{
+\item weightMN: OPLS weights. (see ? ropls::opls).
+}
+
+\itemize{
+\item weightStarMN: OPLS projections. (see ? ropls::opls).
+}
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+Wrapper function to run the ropls::opls().
 }
 \seealso{
 \code{\link[Seurat]{reexports}}

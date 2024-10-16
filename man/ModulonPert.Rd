@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{ModulonPert}
 \alias{ModulonPert}
-\title{FUNCTION_TITLE}
+\title{Modulon Perturbation}
 \usage{
 ModulonPert(
   Regulons,
@@ -17,37 +17,39 @@ ModulonPert(
 )
 }
 \arguments{
-\item{Regulons}{PARAM_DESCRIPTION}
+\item{Regulons}{List object with the regulon constituent elements.}
 
-\item{Modulons}{PARAM_DESCRIPTION}
+\item{Modulons}{List object with the modulon constituent elements.}
 
-\item{ExpMat}{PARAM_DESCRIPTION}
+\item{ExpMat}{Matrix of gene expression with features (genes) in rows and samples (cells) in columns.}
 
-\item{annotation}{PARAM_DESCRIPTION}
+\item{annotation}{Character vector with the class (phenotype/state) of the samples (cells).}
 
-\item{BackgroundClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{BackgroundClasses}{Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL.}
 
-\item{TargetState}{PARAM_DESCRIPTION}
+\item{TargetState}{Character vector with the names of the classes to be analyzed. If NULL, all the classes in annotation will be analyzed. Default: NULL.}
 
-\item{TargetModulon}{PARAM_DESCRIPTION}
+\item{TargetModulon}{Name of the target modulon.}
 
-\item{CombSize}{PARAM_DESCRIPTION}
+\item{CombSize}{Number of elements in the combination.}
 
-\item{Weights}{PARAM_DESCRIPTION, Default: NULL}
+\item{Weights}{Data frame with the weights of the regulatory influence between transcription factors and target genes. If NULL, a default weight of 1 is used for all regulations. Default: NULL.}
 }
 \value{
-OUTPUT_DESCRIPTION
+List of elements, namely, Bipartite_Graph, Combinations, and Modulon_Targets_DA:
+
+\itemize{
+\item Bipartite_Graph: Data frame with the bipartite graph between transcription factors and regulated genes.
+}
+
+\itemize{
+\item Combinations: Data frame with the ranking of combinations.
+}
+
+\itemize{
+\item Modulon_Targets_DA: Gene expression discriminant analysis complete results.
+}
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+Wrapper function to perform the third step of a modulon analysis: modulon perturbation analysis.
 }

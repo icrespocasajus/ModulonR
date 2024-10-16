@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{ModulonIdent}
 \alias{ModulonIdent}
-\title{FUNCTION_TITLE}
+\title{Modulon Identification}
 \usage{
 ModulonIdent(
   data,
@@ -13,29 +13,19 @@ ModulonIdent(
 )
 }
 \arguments{
-\item{data}{PARAM_DESCRIPTION}
+\item{data}{Matrix of regulon activity with features (regulons) in rows and samples (cells) in columns.}
 
-\item{annotation}{PARAM_DESCRIPTION}
+\item{annotation}{Character vector with the class (phenotype/state) of the samples (cells).}
 
-\item{BackgroundClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{BackgroundClasses}{Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL}
 
-\item{QueryClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{QueryClasses}{Character vector with the classes to compare with respect to the background. If NULL, all the classes in annotation will be analyzed (separately) with respect to the background. Default: NULL}
 
-\item{k.range}{PARAM_DESCRIPTION, Default: c(2, 30)}
+\item{k.range}{Clustering resolution (k) range to be explored. Default: c(2, 30)}
 }
 \value{
-OUTPUT_DESCRIPTION
+List with the identified modulons and the global discriminant score (GDS) at every k within the range defined by k.range.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+Wrapper function to perform the first step of a modulon analysis: modulon identification.
 }

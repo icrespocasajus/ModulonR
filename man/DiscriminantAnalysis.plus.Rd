@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{DiscriminantAnalysis.plus}
 \alias{DiscriminantAnalysis.plus}
-\title{FUNCTION_TITLE}
+\title{Discriminant Analysis Plus}
 \usage{
 DiscriminantAnalysis.plus(
   data = NULL,
@@ -15,33 +15,23 @@ DiscriminantAnalysis.plus(
 )
 }
 \arguments{
-\item{data}{PARAM_DESCRIPTION, Default: NULL}
+\item{data}{Matrix with features and samples in rows and columns, respectively.}
 
-\item{annotation}{PARAM_DESCRIPTION, Default: NULL}
+\item{annotation}{Character vector with the class of the samples.}
 
-\item{BackgroundClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{BackgroundClasses}{Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL}
 
-\item{QueryClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{QueryClasses}{Character vector with the classes to compare with respect to the background. If NULL, all the classes in annotation will be analyzed (separately) with respect to the background. Default: NULL}
 
-\item{features}{PARAM_DESCRIPTION, Default: NULL}
+\item{features}{Character vector with the names of the features to be included in the discriminant analysis. If NULL, all the features in data rows are included. Default: NULL}
 
-\item{reduction.name}{PARAM_DESCRIPTION, Default: NULL}
+\item{reduction.name}{Name to label the analysis. Default: NULL}
 
-\item{pairwise}{PARAM_DESCRIPTION, Default: NULL}
+\item{pairwise}{Logical. If TRUE, a pairwise comparison between classes is performed. If NULL, each query class is compared with respect to the background classes. Default: NULL}
 }
 \value{
-OUTPUT_DESCRIPTION
+List with complete results from the \code{ropls::opls()} function for all comparisons.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+This function computes the discriminant analysis (OPLS-DA from the \code{ropls} library), comparing every class in a categorical variable against the background (i.e., the other classes). It provides more information than DiscriminantAnalysis(), as it includes the complete output from the \code{ropls::opls()} function.
 }

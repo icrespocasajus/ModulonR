@@ -2,26 +2,16 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{CalculateGDS}
 \alias{CalculateGDS}
-\title{FUNCTION_TITLE}
+\title{Calculate the Global Discriminant Score (GDS)}
 \usage{
 CalculateGDS(clusters.DA = NULL)
 }
 \arguments{
-\item{clusters.DA}{PARAM_DESCRIPTION, Default: NULL}
+\item{clusters.DA}{Data frame with the output from the DiscriminantAnalysis() function.}
 }
 \value{
-OUTPUT_DESCRIPTION
+Data frame with the GDS for each clustering resolution (k).
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+This function calculates the average maximum discriminancy (for all classes) at each clustering resolution (k).
 }

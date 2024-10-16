@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{DiscriminantAnalysis.plus.seurat}
 \alias{DiscriminantAnalysis.plus.seurat}
-\title{FUNCTION_TITLE}
+\title{Discriminant Analysis Plus Seurat}
 \usage{
 DiscriminantAnalysis.plus.seurat(
   seurat.object = NULL,
@@ -17,39 +17,29 @@ DiscriminantAnalysis.plus.seurat(
 )
 }
 \arguments{
-\item{seurat.object}{PARAM_DESCRIPTION, Default: NULL}
+\item{seurat.object}{Seurat object}
 
-\item{assay}{PARAM_DESCRIPTION, Default: NULL}
+\item{assay}{Name of the assay in \code{seurat.object} to pull the slot data from. If NULL, it takes the name of the active assay in \code{seurat.object}, default = NULL.}
 
-\item{slot}{PARAM_DESCRIPTION, Default: 'data'}
+\item{slot}{Slot to pull data from, default: 'data'.}
 
-\item{annotation}{PARAM_DESCRIPTION, Default: NULL}
+\item{annotation}{Character vector with the class of the samples.}
 
-\item{features}{PARAM_DESCRIPTION, Default: NULL}
+\item{features}{Character vector with the names of the features to be included in the discriminant analysis. If NULL, all the features in data rows are included. Default: NULL}
 
-\item{BackgroundClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{BackgroundClasses}{Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL}
 
-\item{QueryClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{QueryClasses}{Character vector with the classes to compare with respect to the background. If NULL, all the classes in annotation will be analyzed (separately) with respect to the background. Default: NULL}
 
-\item{reduction.name}{PARAM_DESCRIPTION, Default: NULL}
+\item{reduction.name}{Name to label the analysis. Default: NULL}
 
-\item{pairwise}{PARAM_DESCRIPTION, Default: NULL}
+\item{pairwise}{Logical. If TRUE, a pairwise comparison between classes is performed. If NULL, each query class is compared with respect to the background classes. Default: NULL}
 }
 \value{
-OUTPUT_DESCRIPTION
+The Seurat object including a list with complete results from the \code{ropls::opls()}.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+This function computes the discriminant analysis (OPLS-DA from the \code{ropls} library), comparing every class in a categorical variable against the background (i.e., the other classes). It provides more information than DiscriminantAnalysis(), as it includes the complete output from the \code{ropls::opls()} function.
 }
 \seealso{
 \code{\link[Seurat]{reexports}}

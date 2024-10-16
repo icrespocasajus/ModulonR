@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{RunOPLS}
 \alias{RunOPLS}
-\title{FUNCTION_TITLE}
+\title{Run OPLS}
 \usage{
 RunOPLS(
   mat,
@@ -15,35 +15,31 @@ RunOPLS(
 )
 }
 \arguments{
-\item{mat}{PARAM_DESCRIPTION}
+\item{mat}{Matrix with features and samples in rows and columns, respectively.}
 
-\item{annotation}{PARAM_DESCRIPTION}
+\item{annotation}{Character vector with the class of the samples.}
 
-\item{ident.1}{PARAM_DESCRIPTION}
+\item{ident.1}{Character, query class.}
 
-\item{ident.2}{PARAM_DESCRIPTION, Default: NULL}
+\item{ident.2}{Character vector with background classes. If NULL, all the classes in annotation but the query class will be included, Default: NULL.}
 
-\item{scale_weights}{PARAM_DESCRIPTION, Default: TRUE}
+\item{scale_weights}{Boolean; Scale weightMN and weightStarMN.}
 
-\item{scale_vipVn}{PARAM_DESCRIPTION, Default: TRUE}
-
-\item{...}{PARAM_DESCRIPTION}
+\item{scale_vipVn}{Boolean; Scale vipVn.}
 }
 \value{
-OUTPUT_DESCRIPTION
+Data frame with a summary of the \code{ropls::opls()}. The columns are:
+
+\itemize{
+\item weightMN: OPLS weights. (see ? ropls::opls)
+}
+
+\itemize{
+\item weightStarMN: OPLS projections. (see ? ropls::opls)
+}
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+Wrapper function to run the ropls::opls().
 }
 \seealso{
 \code{\link[ropls]{opls}}

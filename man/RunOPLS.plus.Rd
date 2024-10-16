@@ -2,38 +2,26 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{RunOPLS.plus}
 \alias{RunOPLS.plus}
-\title{FUNCTION_TITLE}
+\title{Run OPLS Plus}
 \usage{
 RunOPLS.plus(data, annotation, ident.1, ident.2 = NULL, features = NULL, ...)
 }
 \arguments{
-\item{data}{PARAM_DESCRIPTION}
+\item{data}{Matrix with features and samples in rows and columns, respectively.}
 
-\item{annotation}{PARAM_DESCRIPTION}
+\item{annotation}{Character vector with the class of the samples.}
 
-\item{ident.1}{PARAM_DESCRIPTION}
+\item{ident.1}{Character, query class.}
 
-\item{ident.2}{PARAM_DESCRIPTION, Default: NULL}
+\item{ident.2}{Character vector with background classes. If NULL, all the classes in annotation but the query class will be included, Default: NULL.}
 
-\item{features}{PARAM_DESCRIPTION, Default: NULL}
-
-\item{...}{PARAM_DESCRIPTION}
+\item{features}{Features to be included in the analysis. If NULL, all the features in in the assay and slot are included , Default: NULL.}
 }
 \value{
-OUTPUT_DESCRIPTION
+List with complete results from the \code{ropls::opls()} function for all comparisons.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+Wrapper function to run the ropls::opls().
 }
 \seealso{
 \code{\link[ropls]{opls}}

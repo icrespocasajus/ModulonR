@@ -2,26 +2,23 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{range01}
 \alias{range01}
-\title{FUNCTION_TITLE}
+\title{Range \link{0,1}}
 \usage{
 range01(x)
 }
 \arguments{
-\item{x}{PARAM_DESCRIPTION}
+\item{x}{A numeric vector.}
 }
 \value{
-OUTPUT_DESCRIPTION
+A list object with the normalized values, and the maximum and minimum values of the input vector.
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
+Function to normalize absolute values of a numeric vector as follows: (x-min(x))/(max(x)-min(x)).
 }
 \examples{
 \dontrun{
 if(interactive()){
- #EXAMPLE1
+range01.w.max.min(c('-50','-5','5','50','100')
  }
 }
 }

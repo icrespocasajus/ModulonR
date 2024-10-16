@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{ModulonSelect}
 \alias{ModulonSelect}
-\title{FUNCTION_TITLE}
+\title{Modulon Selection}
 \usage{
 ModulonSelect(
   data,
@@ -13,29 +13,31 @@ ModulonSelect(
 )
 }
 \arguments{
-\item{data}{PARAM_DESCRIPTION}
+\item{data}{Matrix of regulon activity with features (regulons) in rows and samples (cells) in columns.}
 
-\item{modulons}{PARAM_DESCRIPTION}
+\item{modulons}{List object with the modulon constituent elements.}
 
-\item{annotation}{PARAM_DESCRIPTION}
+\item{annotation}{Character vector with the class (phenotype/state) of the samples (cells).}
 
-\item{BackgroundClasses}{PARAM_DESCRIPTION, Default: NULL}
+\item{BackgroundClasses}{Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL.}
 
-\item{TargetState}{PARAM_DESCRIPTION, Default: NULL}
+\item{TargetState}{Character vector with the names of the classes to be analyzed. If NULL, all the classes in annotation will be analyzed, Default: NULL.}
 }
 \value{
-OUTPUT_DESCRIPTION
+List object with 3 elements, namely, Modulon_AUC, Modulon_DA, and Selected_Modulon:
+
+\itemize{
+\item Modulon_AUC: modulon activity.
+}
+
+\itemize{
+\item Modulon_DA: results of the modulon discriminant analysis.
+}
+
+\itemize{
+\item Selected_Modulon: top discriminant modulon for each class.
+}
 }
 \description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
-}
-\examples{
-\dontrun{
-if(interactive()){
- #EXAMPLE1
- }
-}
+Wrapper function to perform the second step of a modulon analysis: modulon selection.
 }

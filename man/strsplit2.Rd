@@ -2,30 +2,34 @@
 % Please edit documentation in R/ModulonR_functions.R
 \name{strsplit2}
 \alias{strsplit2}
-\title{FUNCTION_TITLE}
+\title{String split}
 \usage{
 strsplit2(x, split, ...)
 }
 \arguments{
-\item{x}{PARAM_DESCRIPTION}
+\item{x}{character vector.}
 
-\item{split}{PARAM_DESCRIPTION}
+\item{split}{character to split each element of vector on, see strsplit.}
 
-\item{...}{PARAM_DESCRIPTION}
+\item{...}{other arguments are passed to strsplit}
 }
 \value{
-OUTPUT_DESCRIPTION
+Matrix with the elements of the composite names split in columns
 }
 \description{
-FUNCTION_DESCRIPTION
+Split a vector of composite names into a matrix of simple names.
 }
 \details{
-DETAILS
+This function is the same as strsplit except that the output value is a matrix instead of a list.
+The first column of the matrix contains the first component from each element of x, the second column contains the second components etc.
+The number of columns is equal to the maximum number of components for any element of x.
+The motivation for this function in the limma package is handle input columns which are composites of two or more annotation fields.
 }
 \examples{
 \dontrun{
 if(interactive()){
- #EXAMPLE1
+x = c("AA_BB_1","AA_BB_2")
+strsplit2(x,split="_")
  }
 }
 }
