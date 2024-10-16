@@ -189,21 +189,14 @@ GetSignatureAUC <- function(signature.list, mat, rankings = NULL, scale = FALSE)
   return(signature.score)
 }
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param mat PARAM_DESCRIPTION
-#' @param method PARAM_DESCRIPTION, Default: 'OPLS'
-#' @param annotation PARAM_DESCRIPTION
-#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
-#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Discriminant Analysis
+#' @description This function computes the discriminant analysis (OPLS-DA from the `ropls` library), comparing every class in a categorical variable against the background (i.e., the other classes).
+#' @param mat Matrix with features and samples in rows and columns, respectively.
+#' @param method Character; the discriminant analysis method. Possible values are: "OPLS" (see `FindMarkersOPLS()`).
+#' @param annotation Character vector with the class of the samples.
+#' @param BackgroundClasses Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL
+#' @param QueryClasses Character vector with the classes to compare with respect to the background. If NULL, all the classes in annotation will be analyzed (separately) with respect to the background. Default: NULL
+#' @return Data frame with the discriminant analysis results for each analyzed class.
 #' @rdname DiscriminantAnalysis
 #' @export 
 DiscriminantAnalysis <- function(mat, method = "OPLS", annotation, BackgroundClasses=NULL, QueryClasses=NULL) {
@@ -261,23 +254,17 @@ DiscriminantAnalysis <- function(mat, method = "OPLS", annotation, BackgroundCla
   return(compare.res.df)
 }
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param mat PARAM_DESCRIPTION
-#' @param annotation PARAM_DESCRIPTION
-#' @param ident.1 PARAM_DESCRIPTION
-#' @param ident.2 PARAM_DESCRIPTION, Default: NULL
-#' @param scale_weights PARAM_DESCRIPTION, Default: TRUE
-#' @param scale_vipVn PARAM_DESCRIPTION, Default: TRUE
-#' @param ... PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Run OPLS
+#' @description Wrapper function to run the ropls::opls(). 
+#' @param mat Matrix with features and samples in rows and columns, respectively.
+#' @param annotation Character vector with the class of the samples.
+#' @param ident.1 Character, query class.
+#' @param ident.2 Character vector with background classes. If NULL, all the classes in annotation but the query class will be included, Default: NULL.
+#' @param scale_weights Boolean; Scale weightMN and weightStarMN.
+#' @param scale_vipVn Boolean; Scale vipVn.
+#' @return Data frame with a summary of the `ropls::opls()`. The columns are:
+#' @return - weightMN: OPLS weights. (see ? ropls::opls)
+#' @return - weightStarMN: OPLS projections. (see ? ropls::opls)
 #' @seealso 
 #'  \code{\link[ropls]{opls}}
 #' @rdname RunOPLS
@@ -373,15 +360,17 @@ RunOPLS <- function(mat, annotation, ident.1, ident.2 = NULL, scale_weights = TR
   return(opls.res.df)
 }
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param x PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
+
+
+#' @title scale_range
+#' @description This function scales a numerical vector from 0 to 1. 
+#' @param x Numerical vector.
+#' @return Numerical vector. The input numerical vector scaled to range from 0 to 1.
 #' @examples 
 #' \dontrun{
 #' if(interactive()){
 #'  #EXAMPLE1
+#'  scale_range(x = c(0.1, 0.2, 0.1, 0.3))
 #'  }
 #' }
 #' @rdname scale_range
@@ -397,17 +386,10 @@ scale_range <- function(x) {
 }
 
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param clusters.DA PARAM_DESCRIPTION, Default: NULL
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Calculate the Global Discriminant Score (GDS)
+#' @description This function calculates the average maximum discriminancy (for all classes) at each clustering resolution (k).
+#' @param clusters.DA Data frame with the output from the DiscriminantAnalysis() function.
+#' @return Data frame with the GDS for each clustering resolution (k).
 #' @rdname CalculateGDS
 #' @export 
 CalculateGDS <- function(clusters.DA = NULL){
@@ -456,36 +438,39 @@ CalculateGDS <- function(clusters.DA = NULL){
 }
 
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param x PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
+#' @title Range [0,1]
+#' @description Function to normalize absolute values of a numeric vector as follows: (x-min(x))/(max(x)-min(x)).
+#' @param x A numeric vector.
+#' @return A list object with the normalized values, and the maximum and minimum values of the input vector.
 #' @examples 
 #' \dontrun{
 #' if(interactive()){
-#'  #EXAMPLE1
+#' range01.w.max.min(c('-50','-5','5','50','100')
 #'  }
 #' }
 #' @rdname range01
 #' @export 
 range01 = function(x){(x-min(x, na.rm=T))/(max(x,na.rm=T)-min(x, na.rm=T))}
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param x PARAM_DESCRIPTION
-#' @param split PARAM_DESCRIPTION
-#' @param ... PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
+#' @title String split
+#' @description Split a vector of composite names into a matrix of simple names.
+#' @param x character vector.
+#' @param split character to split each element of vector on, see strsplit.
+#' @param ... other arguments are passed to strsplit
+#' @return Matrix with the elements of the composite names split in columns
+#' @details This function is the same as strsplit except that the output value is a matrix instead of a list. 
+#' The first column of the matrix contains the first component from each element of x, the second column contains the second components etc.
+#' The number of columns is equal to the maximum number of components for any element of x.
+#'The motivation for this function in the limma package is handle input columns which are composites of two or more annotation fields.
 #' @examples 
 #' \dontrun{
 #' if(interactive()){
-#'  #EXAMPLE1
+#' x = c("AA_BB_1","AA_BB_2")
+#' strsplit2(x,split="_")
 #'  }
 #' }
 #' @rdname strsplit2
-#' @export 
+#' @export  
 strsplit2 = function (x, split, ...) {
   x <- as.character(x)
   n <- length(x)
@@ -499,23 +484,16 @@ strsplit2 = function (x, split, ...) {
   out
 }
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param data PARAM_DESCRIPTION, Default: NULL
-#' @param annotation PARAM_DESCRIPTION, Default: NULL
-#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
-#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
-#' @param features PARAM_DESCRIPTION, Default: NULL
-#' @param reduction.name PARAM_DESCRIPTION, Default: NULL
-#' @param pairwise PARAM_DESCRIPTION, Default: NULL
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Discriminant Analysis Plus
+#' @description This function computes the discriminant analysis (OPLS-DA from the `ropls` library), comparing every class in a categorical variable against the background (i.e., the other classes). It provides more information than DiscriminantAnalysis(), as it includes the complete output from the `ropls::opls()` function.
+#' @param data Matrix with features and samples in rows and columns, respectively.
+#' @param annotation Character vector with the class of the samples.
+#' @param BackgroundClasses Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL
+#' @param QueryClasses Character vector with the classes to compare with respect to the background. If NULL, all the classes in annotation will be analyzed (separately) with respect to the background. Default: NULL
+#' @param features Character vector with the names of the features to be included in the discriminant analysis. If NULL, all the features in data rows are included. Default: NULL
+#' @param reduction.name Name to label the analysis. Default: NULL
+#' @param pairwise Logical. If TRUE, a pairwise comparison between classes is performed. If NULL, each query class is compared with respect to the background classes. Default: NULL
+#' @return List with complete results from the `ropls::opls()` function for all comparisons.
 #' @rdname DiscriminantAnalysis.plus
 #' @export 
 DiscriminantAnalysis.plus = function(
@@ -764,25 +742,18 @@ DiscriminantAnalysis.plus = function(
   return(results.list)
 }
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param seurat.object PARAM_DESCRIPTION, Default: NULL
-#' @param assay PARAM_DESCRIPTION, Default: NULL
-#' @param slot PARAM_DESCRIPTION, Default: 'data'
-#' @param annotation PARAM_DESCRIPTION, Default: NULL
-#' @param features PARAM_DESCRIPTION, Default: NULL
-#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
-#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
-#' @param reduction.name PARAM_DESCRIPTION, Default: NULL
-#' @param pairwise PARAM_DESCRIPTION, Default: NULL
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Discriminant Analysis Plus Seurat
+#' @description This function computes the discriminant analysis (OPLS-DA from the `ropls` library), comparing every class in a categorical variable against the background (i.e., the other classes). It provides more information than DiscriminantAnalysis(), as it includes the complete output from the `ropls::opls()` function.
+#' @param seurat.object Seurat object
+#' @param assay Name of the assay in `seurat.object` to pull the slot data from. If NULL, it takes the name of the active assay in `seurat.object`, default = NULL.
+#' @param slot Slot to pull data from, default: 'data'.
+#' @param annotation Character vector with the class of the samples.
+#' @param BackgroundClasses Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL
+#' @param QueryClasses Character vector with the classes to compare with respect to the background. If NULL, all the classes in annotation will be analyzed (separately) with respect to the background. Default: NULL
+#' @param features Character vector with the names of the features to be included in the discriminant analysis. If NULL, all the features in data rows are included. Default: NULL
+#' @param reduction.name Name to label the analysis. Default: NULL
+#' @param pairwise Logical. If TRUE, a pairwise comparison between classes is performed. If NULL, each query class is compared with respect to the background classes. Default: NULL
+#' @return The Seurat object including a list with complete results from the `ropls::opls()`.
 #' @seealso 
 #'  \code{\link[Seurat]{reexports}}
 #' @rdname DiscriminantAnalysis.plus.seurat
@@ -1088,23 +1059,17 @@ DiscriminantAnalysis.plus.seurat = function(seurat.object = NULL,
 }
 
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param seurat.object PARAM_DESCRIPTION
-#' @param ident.1 PARAM_DESCRIPTION
-#' @param ident.2 PARAM_DESCRIPTION, Default: NULL
-#' @param features PARAM_DESCRIPTION, Default: NULL
-#' @param assay PARAM_DESCRIPTION, Default: NULL
-#' @param slot PARAM_DESCRIPTION, Default: 'data'
-#' @param ... PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Run OPLS Plus Seurat
+#' @description Wrapper function to run the ropls::opls(). 
+#' @param seurat.object Seurat object.
+#' @param ident.1 Character, query class.
+#' @param ident.2 Character vector with background classes. If NULL, all the classes in Seurat::Idents(object=seurat.object) but the query class will be included, Default: NULL.
+#' @param features Features to be included in the analysis. If NULL, all the features in in the assay and slot are included , Default: NULL.
+#' @param assay Name of the assay in `seurat.object` to pull the slot data from. If NULL, it takes the name of the active assay in `seurat.object`, default = NULL.
+#' @param slot Slot to pull data from, default: 'data'.
+#' @return Data frame with a summary of the `ropls::opls()`. The columns are:
+#' @return - weightMN: OPLS weights. (see ? ropls::opls).
+#' @return - weightStarMN: OPLS projections. (see ? ropls::opls).
 #' @seealso 
 #'  \code{\link[Seurat]{reexports}}
 #'  \code{\link[ropls]{opls}}
@@ -1167,32 +1132,20 @@ RunOPLS.plus.seurat = function(seurat.object,
   return(opls.res)
 }
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param data PARAM_DESCRIPTION
-#' @param annotation PARAM_DESCRIPTION
-#' @param ident.1 PARAM_DESCRIPTION
-#' @param ident.2 PARAM_DESCRIPTION, Default: NULL
-#' @param features PARAM_DESCRIPTION, Default: NULL
-#' @param ... PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Run OPLS Plus
+#' @description Wrapper function to run the ropls::opls(). 
+#' @param data Matrix with features and samples in rows and columns, respectively.
+#' @param annotation Character vector with the class of the samples.
+#' @param ident.1 Character, query class.
+#' @param ident.2 Character vector with background classes. If NULL, all the classes in annotation but the query class will be included, Default: NULL.
+#' @param features Features to be included in the analysis. If NULL, all the features in in the assay and slot are included , Default: NULL.
+#' @return List with complete results from the `ropls::opls()` function for all comparisons.
 #' @seealso 
 #'  \code{\link[ropls]{opls}}
 #' @rdname RunOPLS.plus
 #' @export 
 #' @importFrom ropls opls
-RunOPLS.plus = function(data,
-                                         annotation,       
-                                         ident.1, 
-                                         ident.2 = NULL,
-                                         features = NULL, ...) {
+RunOPLS.plus = function(data,annotation,ident.1, ident.2 = NULL, features = NULL, ...) {
   
   if(is.null(features)){
     features = rownames(data)
@@ -1243,21 +1196,14 @@ RunOPLS.plus = function(data,
 
 
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param data PARAM_DESCRIPTION
-#' @param annotation PARAM_DESCRIPTION
-#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
-#' @param QueryClasses PARAM_DESCRIPTION, Default: NULL
-#' @param k.range PARAM_DESCRIPTION, Default: c(2, 30)
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Modulon Identification
+#' @description Wrapper function to perform the first step of a modulon analysis: modulon identification.
+#' @param data Matrix of regulon activity with features (regulons) in rows and samples (cells) in columns.
+#' @param annotation Character vector with the class (phenotype/state) of the samples (cells).
+#' @param BackgroundClasses Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL
+#' @param QueryClasses Character vector with the classes to compare with respect to the background. If NULL, all the classes in annotation will be analyzed (separately) with respect to the background. Default: NULL
+#' @param k.range Clustering resolution (k) range to be explored. Default: c(2, 30)
+#' @return List with the identified modulons and the global discriminant score (GDS) at every k within the range defined by k.range.
 #' @rdname ModulonIdent
 #' @export 
 ModulonIdent = function(data, annotation,BackgroundClasses=NULL,QueryClasses=NULL, k.range = c(2,30)){
@@ -1285,7 +1231,6 @@ ModulonIdent = function(data, annotation,BackgroundClasses=NULL,QueryClasses=NUL
   
   data.query.and.background = data[, TRUTH.vector.query.and.background]
   annotation.query.and.background = annotation[ TRUTH.vector.query.and.background]
-  
   
   # Generate TF clusters at different clustering resolutions
   clusters <- FindFeatureCluster(
@@ -1324,21 +1269,17 @@ ModulonIdent = function(data, annotation,BackgroundClasses=NULL,QueryClasses=NUL
 }
 
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param data PARAM_DESCRIPTION
-#' @param modulons PARAM_DESCRIPTION
-#' @param annotation PARAM_DESCRIPTION
-#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
-#' @param TargetState PARAM_DESCRIPTION, Default: NULL
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Modulon Selection
+#' @description Wrapper function to perform the second step of a modulon analysis: modulon selection.
+#' @param data Matrix of regulon activity with features (regulons) in rows and samples (cells) in columns.
+#' @param modulons List object with the modulon constituent elements.
+#' @param annotation Character vector with the class (phenotype/state) of the samples (cells).
+#' @param BackgroundClasses Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL.
+#' @param TargetState Character vector with the names of the classes to be analyzed. If NULL, all the classes in annotation will be analyzed, Default: NULL.
+#' @return List object with 3 elements, namely, Modulon_AUC, Modulon_DA, and Selected_Modulon:
+#' @return * Modulon_AUC: modulon activity.
+#' @return * Modulon_DA: results of the modulon discriminant analysis.
+#' @return * Selected_Modulon: top discriminant modulon for each class.
 #' @rdname ModulonSelect
 #' @export 
 ModulonSelect = function(data, modulons, annotation,BackgroundClasses=NULL,TargetState=NULL){
@@ -1378,25 +1319,21 @@ ModulonSelect = function(data, modulons, annotation,BackgroundClasses=NULL,Targe
 }
 
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param Regulons PARAM_DESCRIPTION
-#' @param Modulons PARAM_DESCRIPTION
-#' @param ExpMat PARAM_DESCRIPTION
-#' @param annotation PARAM_DESCRIPTION
-#' @param BackgroundClasses PARAM_DESCRIPTION, Default: NULL
-#' @param TargetState PARAM_DESCRIPTION
-#' @param TargetModulon PARAM_DESCRIPTION
-#' @param CombSize PARAM_DESCRIPTION
-#' @param Weights PARAM_DESCRIPTION, Default: NULL
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
+#' @title Modulon Perturbation
+#' @description Wrapper function to perform the third step of a modulon analysis: modulon perturbation analysis.
+#' @param Regulons List object with the regulon constituent elements.
+#' @param Modulons List object with the modulon constituent elements.
+#' @param ExpMat Matrix of gene expression with features (genes) in rows and samples (cells) in columns.
+#' @param annotation Character vector with the class (phenotype/state) of the samples (cells).
+#' @param BackgroundClasses Classes to compare with the query class. If NULL, all the classes in annotation except the query class will be included as background. Default: NULL.
+#' @param TargetState Character vector with the names of the classes to be analyzed. If NULL, all the classes in annotation will be analyzed. Default: NULL.
+#' @param TargetModulon Name of the target modulon.
+#' @param CombSize Number of elements in the combination.
+#' @param Weights Data frame with the weights of the regulatory influence between transcription factors and target genes. If NULL, a default weight of 1 is used for all regulations. Default: NULL.
+#' @return List of elements, namely, Bipartite_Graph, Combinations, and Modulon_Targets_DA:
+#' @return * Bipartite_Graph: Data frame with the bipartite graph between transcription factors and regulated genes.
+#' @return * Combinations: Data frame with the ranking of combinations.
+#' @return * Modulon_Targets_DA: Gene expression discriminant analysis complete results.
 #' @rdname ModulonPert
 #' @export 
 ModulonPert = function(Regulons, Modulons, ExpMat, annotation,BackgroundClasses = NULL, TargetState, TargetModulon, CombSize, Weights=NULL){
