@@ -289,6 +289,10 @@ Ludwig Institute for Cancer Research |  Lausanne Branch
 AGORA, Bugnon 25A, 1005 Lausanne (Switzerland), 4th floor, Room 190  
 arsanchezarchidona@gmail.com
 
+```{r , out.width="10%",echo=F}
+knitr::include_graphics("./man/figures/README-remypetremand.jpg")
+```
+
 
 Remy Petremand  
 PhD student  
