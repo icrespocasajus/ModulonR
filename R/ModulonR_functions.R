@@ -439,7 +439,7 @@ CalculateGDS <- function(clusters.DA = NULL){
 
 
 #' @title Range [0,1]
-#' @description Function to normalize absolute values of a numeric vector as follows: (x-min(x))/(max(x)-min(x)).
+#' @description Function to normalize values of a numeric vector as follows: (x-min(x))/(max(x)-min(x)).
 #' @param x A numeric vector.
 #' @return A list object with the normalized values, and the maximum and minimum values of the input vector.
 #' @examples 

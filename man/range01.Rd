@@ -18,7 +18,7 @@ Function to normalize absolute values of a numeric vector as follows: (x-min(x))
 \examples{
 \dontrun{
 if(interactive()){
-range01.w.max.min(c('-50','-5','5','50','100')
+range01(c('-50','-5','5','50','100')
  }
 }
 }
