@@ -13,7 +13,7 @@ range01(x)
 A list object with the normalized values, and the maximum and minimum values of the input vector.
 }
 \description{
-Function to normalize absolute values of a numeric vector as follows: (x-min(x))/(max(x)-min(x)).
+Function to normalize values of a numeric vector as follows: (x-min(x))/(max(x)-min(x)).
 }
 \examples{
 \dontrun{
