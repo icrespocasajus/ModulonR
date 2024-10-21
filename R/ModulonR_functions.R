@@ -445,7 +445,7 @@ CalculateGDS <- function(clusters.DA = NULL){
 #' @examples 
 #' \dontrun{
 #' if(interactive()){
-#' range01.w.max.min(c('-50','-5','5','50','100')
+#' range01(c('-50','-5','5','50','100')
 #'  }
 #' }
 #' @rdname range01
