@@ -43,19 +43,41 @@ devtools::install_github("icrespocasajus/ModulonR")
 
 ## Example
 
-This is a basic example which shows you how to use ModulonR.
+This is a basic example which shows you how to use ModulonR on a mouse
+TILs reference dataset by Andreatta, M. et al. \[1\], including 5 CD8+ T
+cell functional states.
 
-Load required packages:
+### Load the package:
 
 ``` r
 library(ModulonR)
+```
+
+### Load other required packages:
+
+``` r
 library(AUCell)
 library(ggplot2)
 library(pheatmap)
 library(dplyr)
 ```
 
-Load input data:
+The UMAP projection of the input mouse TILs reference dataset showing
+the 5 functional states in different colors:
+<center>
+<img src="./man/figures/README-UMAP_TILs_Dataset.png" width="75%" />
+</center>
+The violin plots show the expression of important marker genes across
+functional states:
+<center>
+<img src="./man/figures/README-Markers_TILs_Dataset.png" width="25%" />
+</center>
+
+A regulon activity matrix and the gene regulatory network (GRN) were
+derived from the scRNASeq data TILs reference dataset using SCENIC
+\[2\].
+
+### Load input data:
 
 ``` r
 # Regulon activity matrix
@@ -72,18 +94,11 @@ gene.expression.matrix = readRDS(file="./data-raw/Gene_Expression_Matrix_TILs.Rd
 
 # TF-target weights in Tex
 Tex.GENIE3.links = readRDS(file="./data-raw/1.4_GENIE3_linkList_CD8_Tex.w.Tox.Rds")
-
-table(annotation)
-#> annotation
-#>     CD8_EarlyActiv CD8_EffectorMemory      CD8_NaiveLike            CD8_Tex 
-#>                631               2410               5520               2087 
-#>           CD8_Tpex 
-#>                731
 ```
 
 ### STEP 1: Modulon Identification
 
-Identify modulons:
+### Identify modulons:
 
 ``` r
 ModulonIdent.results = ModulonIdent(
@@ -92,15 +107,9 @@ ModulonIdent.results = ModulonIdent(
   BackgroundClasses=NULL,
   QueryClasses=NULL,
   k.range = c(2:10))
-#> [1] "Running discriminant analysis for CD8_NaiveLike"
-#> [1] "Running discriminant analysis for CD8_EffectorMemory"
-#> [1] "Running discriminant analysis for CD8_EarlyActiv"
-#> [1] "Running discriminant analysis for CD8_Tex"
-#> [1] "Running discriminant analysis for CD8_Tpex"
-#> [1] "Calculating the GDS..."
 ```
 
-Explore results: plot the Global Discriminant Score (GDS)
+### Explore results: plot the Global Discriminant Score (GDS)
 
 ``` r
 GDS = ModulonIdent.results[['GDS']]
@@ -130,9 +139,9 @@ p <- ggplot2::ggplot(
 plot(p+theme(legend.position = "none"))
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
-Explore results: visualize modulons
+### Explore results: visualize modulons
 
 ``` r
 # Plot a heatmap
@@ -203,11 +212,11 @@ phm.output.AUC.TILs=pheatmap::pheatmap(phm.input,
 )
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 
 ## STEP 2: Modulon Selection
 
-### Modulon discriminant analysis of the target state
+### Modulon discriminant analysis of the CD8_Tex target state:
 
 ``` r
 TargetState = c('CD8_Tex')
@@ -219,12 +228,19 @@ ModulonSelect.results = ModulonSelect(
   BackgroundClasses=NULL,
   TargetState = TargetState)
 #> [1] "Running discriminant analysis for CD8_Tex"
-
-ModulonSelect.results[["Selected_Modulon"]][["CD8_Tex"]]
+ModulonSelect.results[["Selected_Modulon"]][[TargetState]]
 #> [1] "3"
+modulons[[ModulonSelect.results[["Selected_Modulon"]][[TargetState]]]]
+#>  [1] "Ybx1"    "Crem"    "Nr3c1"   "Rora"    "Fli1"    "Gata3"   "Cebpd"  
+#>  [8] "Foxn2"   "Tbx21"   "Hmgb2"   "Zfp433"  "Sap30"   "E4f1"    "Eomes"  
+#> [15] "Runx3"   "Runx2"   "Gtf2f1"  "Snai3"   "Srebf2"  "Maf"     "Rarb"   
+#> [22] "Rara"    "Nono"    "Zfp821"  "Srf"     "Zfp959"  "Zfp961"  "Stat5a" 
+#> [29] "Tbp"     "Uqcrb"   "Trp73"   "Tead1"   "Gfi1"    "E2f6"    "Mxd3"   
+#> [36] "Nfe2"    "Vezf1"   "Zmiz1"   "Batf"    "Gabpb1"  "Smarca4" "Borcs8" 
+#> [43] "Psmd12"  "Nup133"  "Foxc1"   "Gm14295"
 ```
 
-### Explore results: plot modulon discriminantcy for the CD8_Tex state
+### Explore results: plot modulon discriminancy for the CD8_Tex target state
 
 ``` r
 # Plot the discriminant score of all modulons for a given T cell state
@@ -267,14 +283,14 @@ p <- ggplot2::ggplot(
 plot(p)
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
 
 ### STEP 3: Modulon Perturbation
 
-Rank combinations by expected impact on the target state
+### Rank combinations by expected impact on the target state:
 
 ``` r
-ModulonPert.Results = ModulonPert(
+ModulonPert.results = ModulonPert(
   Regulons = regulons,
   Modulons = modulons,
   ExpMat = gene.expression.matrix,
@@ -287,10 +303,15 @@ ModulonPert.Results = ModulonPert(
   )
 ```
 
-Explore results: see top 5 combinations of 3 KOs
+``` r
+#saveRDS(file="./data-raw/ModulonPert.results.Rds",ModulonPert.results)
+ModulonPert.results = readRDS(file="./data-raw/ModulonPert.results.Rds")
+```
+
+### Explore results: see top 5 combinations of 3 KOs
 
 ``` r
-head(ModulonPert.Results[["Combinations"]])[c(1:5),c(2:5)]
+head(ModulonPert.results[["Combinations"]])[c(1:5),c(2:5)]
 #>                  Element_1 Element_2 Element_3      WCS
 #> Combination_1262      Crem     Tbx21     Zmiz1 1.554944
 #> Combination_1263      Crem     Tbx21      Batf 1.501018
@@ -298,6 +319,16 @@ head(ModulonPert.Results[["Combinations"]])[c(1:5),c(2:5)]
 #> Combination_1240      Crem     Tbx21     Runx2 1.440801
 #> Combination_1243      Crem     Tbx21    Srebf2 1.437606
 ```
+
+## References
+
+1.  Andreatta, M. et al. “Interpretation of T cell states from
+    single-cell transcriptomics data using reference atlases.” Nature
+    communications vol. 12,1 2965. 20 May. 2021,
+    <doi:10.1038/s41467-021-23324-4>.
+
+2.  Aibar, S. et al. “SCENIC: single-cell regulatory network inference
+    and clustering.” Nature methods 14.11 (2017): 1083-1086.
 
 # Authors
 

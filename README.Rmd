@@ -28,21 +28,44 @@ devtools::install_github("icrespocasajus/ModulonR")
 
 ## Example
 
-This is a basic example which shows you how to use ModulonR.
+This is a basic example which shows you how to use ModulonR on a mouse TILs reference dataset by Andreatta, M. et al. [1], including 5 CD8+ T cell functional states.
 
-Load required packages:
+### Load the package:
 
 ```{r,warning=FALSE,results='hide', message=FALSE}
 library(ModulonR)
+```
+
+### Load other required packages:
+
+```{r,warning=FALSE,results='hide', message=FALSE}
 library(AUCell)
 library(ggplot2)
 library(pheatmap)
 library(dplyr)
 ```
 
-Load input data:
 
-```{r,eval=TRUE}
+The UMAP projection of the input mouse TILs reference dataset showing the 5 functional states in different colors:
+<center>
+```{r , fig.show='hold',echo=F,out.width="75%"}
+knitr::include_graphics("./man/figures/README-UMAP_TILs_Dataset.png")
+```
+</center>
+
+
+The violin plots show the expression of important marker genes across functional states:
+<center>
+```{r , fig.show='hold',echo=F,out.width="25%"}
+knitr::include_graphics("./man/figures/README-Markers_TILs_Dataset.png")
+```
+</center>
+
+A regulon activity matrix and the gene regulatory network (GRN) were derived from the scRNASeq data TILs reference dataset using SCENIC [2]. 
+
+### Load input data:
+
+```{r,eval=T}
 # Regulon activity matrix
 regulon.activity.matrix = readRDS(file="./data-raw/Regulon_Activity_Matrix_TILs.Rds")
 
@@ -57,15 +80,13 @@ gene.expression.matrix = readRDS(file="./data-raw/Gene_Expression_Matrix_TILs.Rd
 
 # TF-target weights in Tex
 Tex.GENIE3.links = readRDS(file="./data-raw/1.4_GENIE3_linkList_CD8_Tex.w.Tox.Rds")
-
-table(annotation)
 ```
 
 ### STEP 1: Modulon Identification
 
-Identify modulons:
+### Identify modulons:
 
-```{r,eval=TRUE}
+```{r,eval=F}
 ModulonIdent.results = ModulonIdent(
   data=regulon.activity.matrix,
   annotation=annotation,
@@ -73,10 +94,14 @@ ModulonIdent.results = ModulonIdent(
   QueryClasses=NULL,
   k.range = c(2:10))
 ```
+```{r,eval=T,echo=F}
+#saveRDS(file="./data-raw/ModulonIdent.results.Rds",ModulonIdent.results)
+ModulonIdent.results = readRDS(file="./data-raw/ModulonIdent.results.Rds")
+```
 
-Explore results: plot the Global Discriminant Score (GDS)
+### Explore results: plot the Global Discriminant Score (GDS)
 
-```{r,warning=FALSE,warning=FALSE,results='hide', message=FALSE}
+```{r,warning=FALSE,warning=FALSE,results='hide', message=FALSE,eval=T}
 GDS = ModulonIdent.results[['GDS']]
 
 # Identify the best clustering resolution
@@ -104,9 +129,9 @@ p <- ggplot2::ggplot(
 plot(p+theme(legend.position = "none"))
 ```
 
-Explore results: visualize modulons
+### Explore results: visualize modulons
 
-```{r fig.height=8, fig.width=5}
+```{r fig.height=8, fig.width=5,eval=T}
 # Plot a heatmap
 expMat.AUC.TILs.aggregated = aggregate(t(regulon.activity.matrix),by=list(annotation),FUN= mean)
 
@@ -173,15 +198,13 @@ phm.output.AUC.TILs=pheatmap::pheatmap(phm.input,
                              fontsize_col = 12,
                              scale='row'
 )
-
-
 ```
 
 ## STEP 2: Modulon Selection
 
-### Modulon discriminant analysis of the target state
+### Modulon discriminant analysis of the CD8_Tex target state:
 
-```{r}
+```{r,eval=T}
 TargetState = c('CD8_Tex')
 
 ModulonSelect.results = ModulonSelect(
@@ -190,13 +213,19 @@ ModulonSelect.results = ModulonSelect(
   annotation=annotation,
   BackgroundClasses=NULL,
   TargetState = TargetState)
-
-ModulonSelect.results[["Selected_Modulon"]][["CD8_Tex"]]
+ModulonSelect.results[["Selected_Modulon"]][[TargetState]]
+modulons[[ModulonSelect.results[["Selected_Modulon"]][[TargetState]]]]
 ```
 
-### Explore results: plot modulon discriminantcy for the CD8_Tex state
+```{r,eval=T,echo=F}
+#saveRDS(file="./data-raw/ModulonSelect.results.Rds",ModulonSelect.results)
+ModulonSelect.results = readRDS(file="./data-raw/ModulonSelect.results.Rds")
+```
 
-```{r}
+
+### Explore results: plot modulon discriminancy for the CD8_Tex target state
+
+```{r,eval=T}
 # Plot the discriminant score of all modulons for a given T cell state
 
 input.tmp = ModulonSelect.results[["Modulon_DA"]][[TargetState]]
@@ -240,10 +269,10 @@ plot(p)
 
 ### STEP 3: Modulon Perturbation
 
-Rank combinations by expected impact on the target state
+### Rank combinations by expected impact on the target state:
 
-```{r,warning=FALSE}
-ModulonPert.Results = ModulonPert(
+```{r,warning=FALSE,eval=F}
+ModulonPert.results = ModulonPert(
   Regulons = regulons,
   Modulons = modulons,
   ExpMat = gene.expression.matrix,
@@ -256,11 +285,24 @@ ModulonPert.Results = ModulonPert(
   )
 ```
 
-Explore results: see top 5 combinations of 3 KOs
 
-```{r,warning=FALSE}
-head(ModulonPert.Results[["Combinations"]])[c(1:5),c(2:5)]
+```{r,eval=T,echo=T}
+#saveRDS(file="./data-raw/ModulonPert.results.Rds",ModulonPert.results)
+ModulonPert.results = readRDS(file="./data-raw/ModulonPert.results.Rds")
 ```
+
+### Explore results: see top 5 combinations of 3 KOs
+
+```{r,warning=FALSE,eval=T}
+head(ModulonPert.results[["Combinations"]])[c(1:5),c(2:5)]
+```
+
+## References
+
+
+1. Andreatta, M. et al. “Interpretation of T cell states from single-cell transcriptomics data using reference atlases.” Nature communications vol. 12,1 2965. 20 May. 2021, doi:10.1038/s41467-021-23324-4.
+
+2. Aibar, S. et al. "SCENIC: single-cell regulatory network inference and clustering." Nature methods 14.11 (2017): 1083-1086.
 
 
 # Authors
