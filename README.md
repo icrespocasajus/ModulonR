@@ -303,11 +303,6 @@ ModulonPert.results = ModulonPert(
   )
 ```
 
-``` r
-#saveRDS(file="./data-raw/ModulonPert.results.Rds",ModulonPert.results)
-ModulonPert.results = readRDS(file="./data-raw/ModulonPert.results.Rds")
-```
-
 ### Explore results: see top 5 combinations of 3 KOs
 
 ``` r

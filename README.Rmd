@@ -286,7 +286,7 @@ ModulonPert.results = ModulonPert(
 ```
 
 
-```{r,eval=T,echo=T}
+```{r,eval=T,echo=F}
 #saveRDS(file="./data-raw/ModulonPert.results.Rds",ModulonPert.results)
 ModulonPert.results = readRDS(file="./data-raw/ModulonPert.results.Rds")
 ```
